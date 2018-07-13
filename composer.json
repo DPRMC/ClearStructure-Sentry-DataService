@@ -1,5 +1,6 @@
 {
   "name": "dprmc/clear-structure-sentry-data-service",
+  "description": "A library that allows you to import standard import files into the Sentry system.",
   "type": "library",
   "license": "MIT",
   "authors": [
