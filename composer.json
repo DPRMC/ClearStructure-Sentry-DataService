@@ -1,0 +1,12 @@
+{
+  "name": "dprmc/clear-structure-sentry-data-service",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Michael Drennen",
+      "email": "michaeldrennen74@gmail.com"
+    }
+  ],
+  "require": {}
+}
