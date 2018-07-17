@@ -48,10 +48,10 @@ class ImportExcel {
      * @param $pass
      */
     public function __construct( $uatUrl, $prodUrl, $user, $pass ) {
-        $this->uatUrl  = $uatUrl;
-        $this->prodUrl = $prodUrl;
-        $this->user    = $user;
-        $this->pass    = $pass;
+        $this->uatUrl   = $uatUrl;
+        $this->prodUrl  = $prodUrl;
+        $this->user     = $user;
+        $this->password = $pass;
     }
 
     /**
