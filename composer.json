@@ -9,5 +9,10 @@
       "email": "michaeldrennen74@gmail.com"
     }
   ],
-  "require": {}
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "DPRMC\\ClearStructure\\Sentry\\DataService\\Services": "src"
+    }
+  }
 }
