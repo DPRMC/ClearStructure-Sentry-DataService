@@ -2,6 +2,8 @@
 
 namespace DPRMC\ClearStructure\Sentry\DataService\Services;
 
+use Carbon\Carbon;
+
 /**
  * Class ImportExcel
  * @package DPRMC\ClearStructure\Sentry\DataService\Services
@@ -48,9 +50,9 @@ class ImportExcel {
      * @param $pass
      */
     public function __construct( $uatUrl, $prodUrl, $user, $pass ) {
-        $this->uatUrl   = $uatUrl;
-        $this->prodUrl  = $prodUrl;
-        $this->user     = $user;
+        $this->uatUrl  = $uatUrl;
+        $this->prodUrl = $prodUrl;
+        $this->user    = $user;
         $this->password = $pass;
     }
 
@@ -62,18 +64,24 @@ class ImportExcel {
      *                               import file. See ClearStructure docs for details.
      * @param bool $uat              Do you want to run this import against the UAT (testing) site.
      *
+     * @throws \Exception
      * @return mixed
      */
     public function run( $pathToImportFile, $uat = false ) {
+
+        if ( false === file_exists( $pathToImportFile ) ):
+            throw new \Exception( "Unable to find the file located at [" . $pathToImportFile . "] and my directory is " . __DIR__ );
+        endif;
+
         $this->pathToImportFile = $pathToImportFile;
 
         $url    = $uat ? $this->uatUrl : $this->prodUrl;
         $wdsl   = $url . '?WSDL';
-        $stream = file_get_contents( $pathToImportFile );
+        $stream = file_get_contents( $this->pathToImportFile );
 
-        $function        = 'ImportExcel';
-        $culture         = 'en-US';
-        $aSoapParameters = [
+        $function       = 'ImportExcel';
+        $culture        = 'en-US';
+        $soapParameters = [
             'cultureString'               => $culture,
             'userName'                    => $this->user,
             'password'                    => $this->password,
@@ -90,8 +98,30 @@ class ImportExcel {
             'keep_alive' => true, // whether to send the Connection: Keep-Alive header or Connection: close.
         ] );
 
-        $soapResponse = $this->soapClient->$function( $aSoapParameters );
+        $soapResponse = $this->soapClient->$function( $soapParameters );
 
-        return $soapResponse;
+        return $this->parseSoapResponse( $soapResponse );
+
+    }
+
+    /**
+     * You can see below the parsed XML from Sentry isn't the cleanest, so this method pulls out the info I need into a
+     * nicely formatted array.
+     *
+     * @param $soapResponse
+     *
+     * @return array
+     */
+    protected function parseSoapResponse( $soapResponse ) {
+        $parsed = new \SimpleXMLElement( $soapResponse->ImportExcelResult->any );
+
+        return [
+            'time'    => Carbon::parse( (string)$parsed->attributes()->time ),
+            'name'    => (string)$parsed->tables->table->attributes()->name,
+            'num'     => (int)$parsed->tables->table->import,
+            'runtime' => (float)$parsed->tables->table->RunTime,
+            'errors'  => (array)$parsed->tables->table->errors,
+        ];
+
     }
 }
