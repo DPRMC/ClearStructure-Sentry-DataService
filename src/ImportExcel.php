@@ -50,9 +50,9 @@ class ImportExcel {
      * @param $pass
      */
     public function __construct( $uatUrl, $prodUrl, $user, $pass ) {
-        $this->uatUrl  = $uatUrl;
-        $this->prodUrl = $prodUrl;
-        $this->user    = $user;
+        $this->uatUrl   = $uatUrl;
+        $this->prodUrl  = $prodUrl;
+        $this->user     = $user;
         $this->password = $pass;
     }
 
@@ -60,8 +60,8 @@ class ImportExcel {
      * Provided a properly formatted Excel import file, this method will import that data into the Sentry system and
      * return the SOAP response.
      *
-     * @param      $pathToImportFile Used by file_get_contents(). Should be the path to a properly formatted Excel
-     *                               import file. See ClearStructure docs for details.
+     * @param      $pathToImportFile string Used by file_get_contents(). Should be the path to a properly formatted
+     *                               Excel import file. See ClearStructure docs for details.
      * @param bool $uat              Do you want to run this import against the UAT (testing) site.
      *
      * @throws \Exception
