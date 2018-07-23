@@ -77,6 +77,7 @@ class ImportExcel {
 
         $url    = $uat ? $this->uatUrl : $this->prodUrl;
         $wdsl   = $url . '?WSDL';
+
         $stream = file_get_contents( $this->pathToImportFile );
 
         $function       = 'ImportExcel';
@@ -90,6 +91,10 @@ class ImportExcel {
             'createTrades'                => false,
         ];
 
+        /**
+         * @url http://php.net/manual/en/function.libxml-disable-entity-loader.php
+         */
+        libxml_disable_entity_loader( false );
         $this->soapClient = new \SoapClient( $wdsl, [
             'location'   => $url,
             'uri'        => 'gibberish',
