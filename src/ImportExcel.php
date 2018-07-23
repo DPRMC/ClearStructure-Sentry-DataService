@@ -75,8 +75,8 @@ class ImportExcel {
 
         $this->pathToImportFile = $pathToImportFile;
 
-        $url    = $uat ? $this->uatUrl : $this->prodUrl;
-        $wdsl   = $url . '?WSDL';
+        $url  = $uat ? $this->uatUrl : $this->prodUrl;
+        $wdsl = $url . '?WSDL';
 
         $stream = file_get_contents( $this->pathToImportFile );
 
@@ -91,16 +91,22 @@ class ImportExcel {
             'createTrades'                => false,
         ];
 
-        /**
-         * @url http://php.net/manual/en/function.libxml-disable-entity-loader.php
-         */
-        libxml_disable_entity_loader( false );
+        $contextOptions = [
+            'ssl' => [
+                'verify_peer'       => false,
+                'verify_peer_name'  => false,
+                'allow_self_signed' => true,
+            ] ];
+
+        $sslContext = stream_context_create( $contextOptions );
+
         $this->soapClient = new \SoapClient( $wdsl, [
-            'location'   => $url,
-            'uri'        => 'gibberish',
-            'trace'      => true,
-            'exceptions' => true, // whether soap errors throw exceptions of type SoapFault.
-            'keep_alive' => true, // whether to send the Connection: Keep-Alive header or Connection: close.
+            'location'       => $url,
+            'uri'            => 'gibberish',
+            'trace'          => true,
+            'exceptions'     => true, // whether soap errors throw exceptions of type SoapFault.
+            'keep_alive'     => true, // whether to send the Connection: Keep-Alive header or Connection: close.
+            'stream_context' => $sslContext,
         ] );
 
         $soapResponse = $this->soapClient->$function( $soapParameters );
