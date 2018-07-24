@@ -1,5 +1,5 @@
 # ClearStructure - Sentry - Data Service
-[![Coverage Status](https://coveralls.io/repos/github/DPRMC/ClearStructure-Sentry-DataService/badge.svg?branch=master)](https://coveralls.io/github/DPRMC/ClearStructure-Sentry-DataService?branch=master) [![Build Status](https://travis-ci.org/DPRMC/ClearStructure-Sentry-DataService.svg?branch=master)](https://travis-ci.org/DPRMC/ClearStructure-Sentry-DataService)
+[![Coverage Status](https://coveralls.io/repos/github/DPRMC/ClearStructure-Sentry-DataService/badge.svg?branch=master)](https://coveralls.io/github/DPRMC/ClearStructure-Sentry-DataService?branch=master) [![Build Status](https://travis-ci.org/DPRMC/ClearStructure-Sentry-DataService.svg?branch=master)](https://travis-ci.org/DPRMC/ClearStructure-Sentry-DataService) [![Total Downloads](https://poser.pugx.org/dprmc/clear-structure-sentry-data-service/downloads)](https://packagist.org/packages/dprmc/clear-structure-sentry-data-service) [![Latest Stable Version](https://poser.pugx.org/dprmc/clear-structure-sentry-data-service/version)](https://packagist.org/packages/dprmc/clear-structure-sentry-data-service) [![License](https://poser.pugx.org/dprmc/clear-structure-sentry-data-service/license)](https://packagist.org/packages/dprmc/clear-structure-sentry-data-service) 
 
 ## ImportExcel
 Used to import Standard Import Files as defined by ClearStructure.
