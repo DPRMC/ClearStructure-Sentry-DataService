@@ -14,7 +14,15 @@ class ImportExcelTest extends DprmcTestCase {
         $pass             = getenv( 'PASS' );
         $pathToImportFile = 'tests/testImport.xlsx';
         $importExcel      = new ImportExcel( $uatUrl, $prodUrl, $user, $pass );
-        $parsedResponse   = $importExcel->run( $pathToImportFile, true );
+        try {
+            $parsedResponse = $importExcel->run( $pathToImportFile, true );
+        } catch ( Exception $exception ) {
+            echo "\n\n\n";
+            echo $exception->getTraceAsString();
+            echo $exception->getMessage();
+            echo "\n\n\n";
+        }
+
 
         $this->assertEquals( 2, $parsedResponse[ 'num' ] );
     }

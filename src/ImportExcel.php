@@ -76,7 +76,9 @@ class ImportExcel {
         $this->pathToImportFile = $pathToImportFile;
 
         $url  = $uat ? $this->uatUrl : $this->prodUrl;
-        $wdsl = $url . '?WSDL';
+        $wsdl = $url . '?WSDL';
+
+        var_dump( $wsdl );
 
         $stream = file_get_contents( $this->pathToImportFile );
 
@@ -103,7 +105,7 @@ class ImportExcel {
 
         $sslContext = stream_context_create( $contextOptions );
 
-        $this->soapClient = new \SoapClient( $wdsl, [
+        $this->soapClient = new \SoapClient( $wsdl, [
             'soap_version'   => SOAP_1_2,
             'exceptions'     => true,
             'trace'          => 1,
