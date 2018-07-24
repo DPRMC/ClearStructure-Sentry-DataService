@@ -7,6 +7,15 @@ class ImportExcelTest extends DprmcTestCase {
     /**
      * @test
      */
+    public function testWSDL() {
+        $uatUrl   = getenv( 'UAT' );
+        $contents = file_get_contents( $uatUrl );
+        $this->assertFalse( empty( $contents ) );
+    }
+
+    /**
+     * @test
+     */
     public function importsTwoPrices() {
         $uatUrl           = getenv( 'UAT' );
         $prodUrl          = getenv( 'PROD' );
