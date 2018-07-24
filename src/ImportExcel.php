@@ -92,7 +92,10 @@ class ImportExcel {
         ];
 
         $contextOptions = [
-            'ssl' => [
+            'http' => [
+                'user_agent' => 'PHPSoapClient',
+            ],
+            'ssl'  => [
                 'verify_peer'       => false,
                 'verify_peer_name'  => false,
                 'allow_self_signed' => true,
@@ -101,6 +104,10 @@ class ImportExcel {
         $sslContext = stream_context_create( $contextOptions );
 
         $this->soapClient = new \SoapClient( $wdsl, [
+            'soap_version'   => SOAP_1_2,
+            'exceptions'     => true,
+            'trace'          => 1,
+            'cache_wsdl'     => WSDL_CACHE_NONE,
             'location'       => $url,
             'uri'            => 'gibberish',
             'trace'          => true,
