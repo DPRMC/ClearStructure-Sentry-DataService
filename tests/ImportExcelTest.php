@@ -8,9 +8,12 @@ class ImportExcelTest extends DprmcTestCase {
      * @test
      */
     public function testWSDL() {
+        echo "\n\nSTART testWSDL\n";
         $uatUrl   = getenv( 'UAT' );
+        var_dump( $uatUrl );
         $contents = file_get_contents( $uatUrl );
         $this->assertFalse( empty( $contents ) );
+        echo "\n\nEND testWSDL\n";
     }
 
     /**
