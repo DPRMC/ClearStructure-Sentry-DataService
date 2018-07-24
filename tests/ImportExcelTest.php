@@ -7,18 +7,6 @@ class ImportExcelTest extends DprmcTestCase {
     /**
      * @test
      */
-    public function testWSDL() {
-        echo "\n\nSTART testWSDL\n";
-        $uatUrl   = getenv( 'UAT' );
-        var_dump( $uatUrl );
-        $contents = file_get_contents( $uatUrl );
-        $this->assertFalse( empty( $contents ) );
-        echo "\n\nEND testWSDL\n";
-    }
-
-    /**
-     * @test
-     */
     public function importsTwoPrices() {
         $uatUrl           = getenv( 'UAT' );
         $prodUrl          = getenv( 'PROD' );
@@ -26,15 +14,7 @@ class ImportExcelTest extends DprmcTestCase {
         $pass             = getenv( 'PASS' );
         $pathToImportFile = 'tests/testImport.xlsx';
         $importExcel      = new ImportExcel( $uatUrl, $prodUrl, $user, $pass );
-        try {
-            $parsedResponse = $importExcel->run( $pathToImportFile, true );
-        } catch ( Exception $exception ) {
-            echo "\n\n\n";
-            echo $exception->getTraceAsString();
-            echo $exception->getMessage();
-            echo "\n\n\n";
-        }
-
+        $parsedResponse   = $importExcel->run( $pathToImportFile, true );
 
         $this->assertEquals( 2, $parsedResponse[ 'num' ] );
     }

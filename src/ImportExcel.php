@@ -78,8 +78,6 @@ class ImportExcel {
         $url  = $uat ? $this->uatUrl : $this->prodUrl;
         $wsdl = $url . '?WSDL';
 
-        var_dump( $wsdl );
-
         $stream = file_get_contents( $this->pathToImportFile );
 
         $function       = 'ImportExcel';
@@ -93,29 +91,9 @@ class ImportExcel {
             'createTrades'                => false,
         ];
 
-        $contextOptions = [
-            'http' => [
-                'user_agent' => 'PHPSoapClient',
-            ],
-            'ssl'  => [
-                'verify_peer'       => false,
-                'verify_peer_name'  => false,
-                'allow_self_signed' => true,
-            ] ];
-
-        $sslContext = stream_context_create( $contextOptions );
-
         $this->soapClient = new \SoapClient( $wsdl, [
-            'soap_version'   => SOAP_1_2,
-            'exceptions'     => true,
-            'trace'          => 1,
-            'cache_wsdl'     => WSDL_CACHE_NONE,
             'location'       => $url,
             'uri'            => 'gibberish',
-            'trace'          => true,
-            'exceptions'     => true, // whether soap errors throw exceptions of type SoapFault.
-            'keep_alive'     => true, // whether to send the Connection: Keep-Alive header or Connection: close.
-            'stream_context' => $sslContext,
         ] );
 
         $soapResponse = $this->soapClient->$function( $soapParameters );
