@@ -19,6 +19,13 @@ $pass             = 'yourEncryptedSentryPassword';
 $pathToImportFile = 'standard_import_file.xlsx';
 $importExcel      = new ImportExcel( $uatUrl, $prodUrl, $user, $pass );
 $parsedResponse   = $importExcel->run( $pathToImportFile, false );
+
+
+// Changing the code to run like this:
+$soapResponse = ImportExcel::init( $uatUrl, $prodUrl, $user, $pass )
+                           ->setData($pathToImportFile)
+                           ->run(false);
+
 ```
 
 ## Testing

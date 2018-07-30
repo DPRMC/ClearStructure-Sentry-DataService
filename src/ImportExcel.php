@@ -3,6 +3,7 @@
 namespace DPRMC\ClearStructure\Sentry\DataService\Services;
 
 use Carbon\Carbon;
+use DPRMC\Excel;
 
 /**
  * Class ImportExcel
@@ -42,6 +43,11 @@ class ImportExcel {
     protected $soapClient;
 
     /**
+     * @var string Either path or array
+     */
+    protected $dataType = NULL;
+
+    /**
      * ImportExcel constructor.
      *
      * @param $uatUrl
@@ -49,11 +55,50 @@ class ImportExcel {
      * @param $user
      * @param $pass
      */
-    public function __construct( $uatUrl, $prodUrl, $user, $pass ) {
+    public function __construct($uatUrl, $prodUrl, $user, $pass) {
         $this->uatUrl   = $uatUrl;
         $this->prodUrl  = $prodUrl;
         $this->user     = $user;
         $this->password = $pass;
+    }
+
+    public static function init($uatUrl, $prodUrl, $user, $pass) {
+        return new self($uatUrl, $prodUrl, $user, $pass);
+    }
+
+    /**
+     * @param $data
+     * @return $this
+     * @throws \Exception
+     */
+    public function setData($data) {
+        if ( is_array($data) ):
+            $this->dataType = 'array';
+            $this->data     = $data;
+            return $this;
+        endif;
+
+        if ( is_string($data) ):
+            $this->dataType = 'path';
+            $this->data     = $data;
+            return $this;
+        endif;
+
+        throw new \Exception("You need to pass a path to an Excel file, or a multi-dimensional array containing the data to be inserted.");
+    }
+
+    public function run($uat = FALSE) {
+        switch ( $this->dataType ):
+            case 'array':
+                break;
+
+            case 'path':
+                return $this->importPath($this->data, $uat);
+                break;
+
+            default:
+                throw new \Exception("You need to set your data source for the import.");
+        endswitch;
     }
 
     /**
@@ -62,15 +107,15 @@ class ImportExcel {
      *
      * @param      $pathToImportFile string Used by file_get_contents(). Should be the path to a properly formatted
      *                               Excel import file. See ClearStructure docs for details.
-     * @param bool $uat              Do you want to run this import against the UAT (testing) site.
+     * @param bool $uat Do you want to run this import against the UAT (testing) site.
      *
      * @throws \Exception
      * @return mixed
      */
-    public function run( $pathToImportFile, $uat = false ) {
+    public function importPath($pathToImportFile, $uat = FALSE) {
 
-        if ( false === file_exists( $pathToImportFile ) ):
-            throw new \Exception( "Unable to find the file located at [" . $pathToImportFile . "] and my directory is " . __DIR__ );
+        if ( FALSE === file_exists($pathToImportFile) ):
+            throw new \Exception("Unable to find the file located at [" . $pathToImportFile . "] and my directory is " . __DIR__);
         endif;
 
         $this->pathToImportFile = $pathToImportFile;
@@ -78,7 +123,7 @@ class ImportExcel {
         $url  = $uat ? $this->uatUrl : $this->prodUrl;
         $wsdl = $url . '?WSDL';
 
-        $stream = file_get_contents( $this->pathToImportFile );
+        $stream = file_get_contents($this->pathToImportFile);
 
         $function       = 'ImportExcel';
         $culture        = 'en-US';
@@ -87,19 +132,35 @@ class ImportExcel {
             'userName'                    => $this->user,
             'password'                    => $this->password,
             'stream'                      => $stream,
-            'sortTransactionsByTradeDate' => false,
-            'createTrades'                => false,
+            'sortTransactionsByTradeDate' => FALSE,
+            'createTrades'                => FALSE,
         ];
 
-        $this->soapClient = new \SoapClient( $wsdl, [
-            'location'       => $url,
-            'uri'            => 'gibberish',
-        ] );
+        $this->soapClient = new \SoapClient($wsdl, [
+            'location' => $url,
+            'uri'      => 'gibberish',
+        ]);
 
-        $soapResponse = $this->soapClient->$function( $soapParameters );
+        $soapResponse = $this->soapClient->$function($soapParameters);
 
-        return $this->parseSoapResponse( $soapResponse );
+        return $this->parseSoapResponse($soapResponse);
+    }
 
+    /**
+     * @param $dataArray
+     * @param bool $uat
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function importArray($dataArray, $uat = FALSE) {
+        $tempFile       = tmpfile();
+        $options        = [
+            'title'    => "Sentry Import File",
+            'subject'  => "Import File",
+            'category' => "import",
+        ];
+        $pathToTempFile = Excel::simple($dataArray, [], "Data to Import", $tempFile, $options);
+        return $this->importPath($pathToTempFile, $uat);
     }
 
     /**
@@ -110,11 +171,11 @@ class ImportExcel {
      *
      * @return array
      */
-    protected function parseSoapResponse( $soapResponse ) {
-        $parsed = new \SimpleXMLElement( $soapResponse->ImportExcelResult->any );
+    protected function parseSoapResponse($soapResponse) {
+        $parsed = new \SimpleXMLElement($soapResponse->ImportExcelResult->any);
 
         return [
-            'time'    => Carbon::parse( (string)$parsed->attributes()->time ),
+            'time'    => Carbon::parse((string)$parsed->attributes()->time),
             'name'    => (string)$parsed->tables->table->attributes()->name,
             'num'     => (int)$parsed->tables->table->import,
             'runtime' => (float)$parsed->tables->table->RunTime,
