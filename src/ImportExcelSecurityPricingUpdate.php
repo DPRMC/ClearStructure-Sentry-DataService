@@ -62,7 +62,9 @@ class ImportExcelSecurityPricingUpdate extends ImportExcel {
         ];
         $pathToTempFile = Excel::simple($this->dataArray, [], "Security_Pricing_Update", $tempFilename, $options);
 
-        return $this->importPath($pathToTempFile);
+        $response = $this->importPath($pathToTempFile);
+        unlink($tempFilename);
+        return $response;
     }
 
     /**
