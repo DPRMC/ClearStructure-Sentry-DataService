@@ -76,4 +76,24 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
         }
         $this->assertInstanceOf(Exception::class, $exception);
     }
+
+
+    /**
+     * @test
+     */
+    public function invalidDataTypeThrowsException() {
+        $uatUrl          = getenv('UAT');
+        $prodUrl         = getenv('PROD');
+        $user            = getenv('USER');
+        $pass            = getenv('PASS');
+        $invalidDataType = 42;
+        try {
+            ImportExcelSecurityPricingUpdate::init($uatUrl, $prodUrl, $user, $pass, TRUE)
+                                            ->setData($invalidDataType)
+                                            ->run();
+        } catch ( Exception $exception ) {
+
+        }
+        $this->assertInstanceOf(Exception::class, $exception);
+    }
 }
