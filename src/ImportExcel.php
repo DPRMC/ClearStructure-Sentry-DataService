@@ -65,7 +65,21 @@ abstract class ImportExcel {
     protected $wsdl;
 
 
+    /**
+     * ImportExcel constructor.
+     * @param $uatUrl
+     * @param $prodUrl
+     * @param $user
+     * @param $pass
+     * @param bool $uat
+     * @throws \Exception
+     */
     public function __construct($uatUrl, $prodUrl, $user, $pass, $uat = FALSE) {
+
+        if ( $uatUrl == $prodUrl ):
+            throw new \Exception("Your UAT url is the same as your PROD url. That could be dangerous.");
+        endif;
+
         $this->uatUrl   = $uatUrl;
         $this->prodUrl  = $prodUrl;
         $this->user     = $user;
