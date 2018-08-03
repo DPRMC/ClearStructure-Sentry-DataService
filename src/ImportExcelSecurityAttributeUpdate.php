@@ -60,30 +60,9 @@ class ImportExcelSecurityAttributeUpdate extends ImportExcel {
         $pathToTempFile = Excel::simple($this->dataArray, [], "Security_Attribute_Update", $tempFilename, $options);
 
         $response = $this->importPath($pathToTempFile);
-        unlink($tempFilename);
+        @unlink($tempFilename);
         return $response;
     }
 
-    /**
-     * You can see below the parsed XML from Sentry isn't the cleanest, so this method pulls out the info I need into a
-     * nicely formatted array.
-     *
-     * @param $soapResponse
-     *
-     * @return array
-     */
-    protected function parseSoapResponse($soapResponse) {
-        $parsed = new \SimpleXMLElement($soapResponse->ImportExcelResult->any);
 
-        $parsedResponse = [
-            'time'    => Carbon::parse((string)$parsed->attributes()->time),
-            'name'    => (string)$parsed->tables->table->attributes()->name,
-            'num'     => (int)$parsed->tables->table->import,
-            'runtime' => (float)$parsed->tables->table->RunTime,
-            'errors'  => (array)$parsed->tables->table->errors,
-        ];
-
-        return $parsedResponse;
-
-    }
 }

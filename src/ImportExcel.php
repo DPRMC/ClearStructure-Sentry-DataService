@@ -144,5 +144,44 @@ abstract class ImportExcel {
 
     abstract protected function importArray($dataArray);
 
-    abstract protected function parseSoapResponse($soapResponse);
+    //abstract protected function parseSoapResponse($soapResponse);
+
+    /**
+     * You can see below the parsed XML from Sentry isn't the cleanest, so this method pulls out the info I need into a
+     * nicely formatted array.
+     *
+     * @param $soapResponse
+     *
+     * @return array
+     */
+    protected function parseSoapResponse($soapResponse) {
+        $parsed = new \SimpleXMLElement($soapResponse->ImportExcelResult->any);
+
+        $errors = [];
+        if ( is_iterable($parsed->tables->table->errors->error) ):
+            foreach ( $parsed->tables->table->errors->error as $i => $error ):
+                $errors[] = (string)$error;
+            endforeach;
+        endif;
+
+        $warnings = [];
+        if ( is_iterable($parsed->tables->table->warnings->warning) ):
+            foreach ( $parsed->tables->table->warnings->warning as $i => $warning ):
+                $warnings[] = (string)$warning;
+            endforeach;
+        endif;
+
+
+        $parsedResponse = [
+            'time'     => Carbon::parse((string)$parsed->attributes()->time),
+            'name'     => (string)$parsed->tables->table->attributes()->name,
+            'num'      => (int)$parsed->tables->table->import,
+            'runtime'  => (float)$parsed->tables->table->RunTime,
+            'errors'   => $errors,
+            'warnings' => $warnings,
+        ];
+
+        return $parsedResponse;
+
+    }
 }

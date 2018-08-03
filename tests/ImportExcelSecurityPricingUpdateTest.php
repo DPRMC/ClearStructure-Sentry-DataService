@@ -12,7 +12,7 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
         $prodUrl          = getenv('PROD');
         $user             = getenv('USER');
         $pass             = getenv('PASS');
-        $pathToImportFile = 'tests/testImport.xlsx';
+        $pathToImportFile = 'tests/testImportPrices.xlsx';
 
         $parsedResponse = ImportExcelSecurityPricingUpdate::init($uatUrl, $prodUrl, $user, $pass, TRUE)
                                                           ->setData($pathToImportFile)
