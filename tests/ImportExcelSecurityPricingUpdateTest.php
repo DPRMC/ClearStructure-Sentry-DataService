@@ -96,4 +96,42 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
         }
         $this->assertInstanceOf(Exception::class, $exception);
     }
+
+    /**
+     * @test
+     */
+    public function prodUrlMatchingUatUrlShouldThrowException() {
+        $uatUrl   = getenv('UAT');
+        $prodUrl  = getenv('UAT');
+        $user     = getenv('USER');
+        $pass     = getenv('PASS');
+        $fakeData = [];
+        try {
+            ImportExcelSecurityPricingUpdate::init($uatUrl, $prodUrl, $user, $pass, TRUE)
+                                            ->setData($fakeData)
+                                            ->run();
+        } catch ( Exception $exception ) {
+
+        }
+        $this->assertInstanceOf(Exception::class, $exception);
+    }
+
+    /**
+     * @test
+     */
+    public function notCallingSetDataShouldThrowException() {
+        $uatUrl  = getenv('UAT');
+        $prodUrl = getenv('PROD');
+        $user    = getenv('USER');
+        $pass    = getenv('PASS');
+        try {
+            ImportExcelSecurityPricingUpdate::init($uatUrl, $prodUrl, $user, $pass, TRUE)
+                                            ->run();
+        } catch ( Exception $exception ) {
+
+        }
+        $this->assertInstanceOf(Exception::class, $exception);
+    }
+
+
 }
