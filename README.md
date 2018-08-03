@@ -17,15 +17,33 @@ $prodUrl          = 'http://your-prod-url';
 $user             = 'yourSentryUserName';
 $pass             = 'yourEncryptedSentryPassword';
 $pathToImportFile = 'standard_import_file.xlsx';
-$importExcel      = new ImportExcel( $uatUrl, $prodUrl, $user, $pass );
-$parsedResponse   = $importExcel->run( $pathToImportFile, false );
+$postToUAT        = true;
 
-
-// Changing the code to run like this:
-$soapResponse = ImportExcel::init( $uatUrl, $prodUrl, $user, $pass )
+$soapResponse = ImportExcel::init( $uatUrl, $prodUrl, $user, $pass, $postToUAT )
                            ->setData($pathToImportFile)
-                           ->run(false);
+                           ->run();
+                           
+// Contents of $soapResponse if everything goes well:
+Array
+(
+    [time] => Carbon\Carbon Object
+        (
+            [date] => 2018-08-03 16:12:23.000000
+            [timezone_type] => 3
+            [timezone] => UTC
+        )
 
+    [name] => Security_Attribute_Update
+    [num] => 2
+    [runtime] => 296.8872
+    [errors] => Array
+        (
+        )
+
+    [warnings] => Array
+        (
+        )
+)
 ```
 
 ## Testing
