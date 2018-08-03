@@ -144,8 +144,6 @@ abstract class ImportExcel {
 
     abstract protected function importArray($dataArray);
 
-    //abstract protected function parseSoapResponse($soapResponse);
-
     /**
      * You can see below the parsed XML from Sentry isn't the cleanest, so this method pulls out the info I need into a
      * nicely formatted array.
@@ -158,14 +156,15 @@ abstract class ImportExcel {
         $parsed = new \SimpleXMLElement($soapResponse->ImportExcelResult->any);
 
         $errors = [];
-        if ( is_iterable($parsed->tables->table->errors->error) ):
+
+        if ( !is_null($parsed->tables->table->errors->error) ):
             foreach ( $parsed->tables->table->errors->error as $i => $error ):
                 $errors[] = (string)$error;
             endforeach;
         endif;
 
         $warnings = [];
-        if ( is_iterable($parsed->tables->table->warnings->warning) ):
+        if ( !is_null($parsed->tables->table->warnings->warning) ):
             foreach ( $parsed->tables->table->warnings->warning as $i => $warning ):
                 $warnings[] = (string)$warning;
             endforeach;
