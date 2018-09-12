@@ -139,10 +139,16 @@ abstract class ImportExcel {
         endswitch;
     }
 
+    /**
+     * If you run ImportExcel using an array of data as the input, its sometimes useful for debugging to see the actual
+     * file that is getting sent to Sentry.
+     * @return mixed
+     */
+    abstract public function getExcelFile();
 
     abstract protected function importPath($pathToImportFile);
 
-    abstract protected function importArray($dataArray);
+    abstract protected function importArray();
 
     /**
      * You can see below the parsed XML from Sentry isn't the cleanest, so this method pulls out the info I need into a
