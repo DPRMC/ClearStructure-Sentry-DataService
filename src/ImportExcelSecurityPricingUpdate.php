@@ -57,20 +57,18 @@ class ImportExcelSecurityPricingUpdate extends ImportExcel {
         return $response;
     }
 
-    /**
-     * @return string The Path to the temp Excel file.
-     * @throws \Exception
-     */
+
     public function getExcelFile() {
         $tempFileHandle = tmpfile();
         $metaData       = stream_get_meta_data( $tempFileHandle );
         $tempFilename   = $metaData[ 'uri' ];
         $options        = [
-            'title'    => "Sentry Import File",
+            'title'    => "Sentry Attribute Update",
             'subject'  => "Import File",
             'category' => "import",
         ];
-        return Excel::simple( $this->dataArray, [], "Security_Pricing_Update", $tempFilename, $options );
+        return Excel::simple( $this->dataArray, [], "Security_Attribute_Update", $tempFilename, $options );
     }
+
 
 }
