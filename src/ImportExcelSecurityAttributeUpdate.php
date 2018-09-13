@@ -55,12 +55,11 @@ class ImportExcelSecurityAttributeUpdate extends ImportExcel {
     }
 
 
-    /**
-     * @return string The Path to the temp Excel file.
-     * @throws \Exception
-     */
-    public function getExcelFile() {
-        $tempFileHandle = tmpfile();
+    public function getExcelFile( string $directoryForExcelFile = NULL ) {
+        $tempFilename   = tempnam( $directoryForExcelFile, 'sentry_data_' );
+        $tempFileHandle = fopen( $tempFilename, "w" );
+
+        //$tempFileHandle = tmpfile();
         $metaData       = stream_get_meta_data( $tempFileHandle );
         $tempFilename   = $metaData[ 'uri' ];
         $options        = [
