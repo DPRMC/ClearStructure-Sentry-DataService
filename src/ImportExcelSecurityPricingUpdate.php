@@ -58,8 +58,11 @@ class ImportExcelSecurityPricingUpdate extends ImportExcel {
     }
 
 
-    public function getExcelFile() {
-        $tempFileHandle = tmpfile();
+    public function getExcelFile( string $directoryForExcelFile = NULL ) {
+        $tempFilename   = tempnam( $directoryForExcelFile, 'sentry_sec_pricing_' );
+        $tempFileHandle = fopen( $tempFilename, "w" );
+
+        //$tempFileHandle = tmpfile();
         $metaData       = stream_get_meta_data( $tempFileHandle );
         $tempFilename   = $metaData[ 'uri' ];
         $options        = [

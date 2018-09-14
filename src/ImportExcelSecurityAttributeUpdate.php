@@ -56,7 +56,7 @@ class ImportExcelSecurityAttributeUpdate extends ImportExcel {
 
 
     public function getExcelFile( string $directoryForExcelFile = NULL ) {
-        $tempFilename   = tempnam( $directoryForExcelFile, 'sentry_data_' );
+        $tempFilename   = tempnam( $directoryForExcelFile, 'sentry_sec_attribute_' );
         $tempFileHandle = fopen( $tempFilename, "w" );
 
         //$tempFileHandle = tmpfile();
