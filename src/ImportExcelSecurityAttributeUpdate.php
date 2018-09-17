@@ -67,7 +67,7 @@ class ImportExcelSecurityAttributeUpdate extends ImportExcel {
             'subject'  => "Import File",
             'category' => "import",
         ];
-        return Excel::simple( $this->dataArray, [], "Security_Pricing_Update", $tempFilename, $options );
+        return Excel::simple( $this->dataArray, [], "Security_Attribute_Update", $tempFilename, $options );
     }
 
 
