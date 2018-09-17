@@ -18,9 +18,9 @@ class ImportExcelSecurityAttributeUpdate extends ImportExcel {
      * @throws \Exception
      * @return mixed
      */
-    public function importPath($pathToImportFile) {
+    public function importPath( $pathToImportFile ) {
 
-        $stream = file_get_contents($pathToImportFile);
+        $stream = file_get_contents( $pathToImportFile );
 
         $function       = 'ImportExcel';
         $culture        = 'en-US';
@@ -33,14 +33,14 @@ class ImportExcelSecurityAttributeUpdate extends ImportExcel {
             'createTrades'                => FALSE,
         ];
 
-        $this->soapClient = new \SoapClient($this->wsdl, [
+        $this->soapClient = new \SoapClient( $this->wsdl, [
             'location' => $this->url,
             'uri'      => 'gibberish',
-        ]);
+        ] );
 
-        $soapResponse = $this->soapClient->$function($soapParameters);
+        $soapResponse = $this->soapClient->$function( $soapParameters );
 
-        return $this->parseSoapResponse($soapResponse);
+        return $this->parseSoapResponse( $soapResponse );
     }
 
     /**
@@ -49,7 +49,7 @@ class ImportExcelSecurityAttributeUpdate extends ImportExcel {
      */
     protected function importArray() {
         $pathToTempFile = $this->getExcelFile();
-        $response = $this->importPath($pathToTempFile);
+        $response       = $this->importPath( $pathToTempFile );
         @unlink( $pathToTempFile );
         return $response;
     }
@@ -60,9 +60,9 @@ class ImportExcelSecurityAttributeUpdate extends ImportExcel {
         $tempFileHandle = fopen( $tempFilename, "w" );
 
         //$tempFileHandle = tmpfile();
-        $metaData       = stream_get_meta_data( $tempFileHandle );
-        $tempFilename   = $metaData[ 'uri' ];
-        $options        = [
+        $metaData     = stream_get_meta_data( $tempFileHandle );
+        $tempFilename = $metaData[ 'uri' ] . '.xlsx';
+        $options      = [
             'title'    => "Sentry Import File",
             'subject'  => "Import File",
             'category' => "import",

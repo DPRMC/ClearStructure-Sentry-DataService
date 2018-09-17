@@ -63,9 +63,9 @@ class ImportExcelSecurityPricingUpdate extends ImportExcel {
         $tempFileHandle = fopen( $tempFilename, "w" );
 
         //$tempFileHandle = tmpfile();
-        $metaData       = stream_get_meta_data( $tempFileHandle );
-        $tempFilename   = $metaData[ 'uri' ];
-        $options        = [
+        $metaData     = stream_get_meta_data( $tempFileHandle );
+        $tempFilename = $metaData[ 'uri' ] . '.xlsx';
+        $options      = [
             'title'    => "Sentry Attribute Update",
             'subject'  => "Import File",
             'category' => "import",
