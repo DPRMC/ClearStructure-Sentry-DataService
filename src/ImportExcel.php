@@ -64,6 +64,9 @@ abstract class ImportExcel {
      */
     protected $wsdl;
 
+    // Passed by reference via the setPathVariable() method.
+    protected $pathVariable = NULL;
+
 
     /**
      * ImportExcel constructor.
@@ -90,6 +93,16 @@ abstract class ImportExcel {
         $this->wsdl = $this->url . '?WSDL';
     }
 
+    /**
+     * Creates a single instance of the ImportExcel class.
+     * @param $uatUrl
+     * @param $prodUrl
+     * @param $user
+     * @param $pass
+     * @param bool $uat
+     * @return mixed
+     * @throws \Exception
+     */
     public final static function init($uatUrl, $prodUrl, $user, $pass, $uat = FALSE) {
         if ( NULL === static::$_instance ) {
             static::$_instance = new static($uatUrl, $prodUrl, $user, $pass, $uat);
@@ -99,11 +112,12 @@ abstract class ImportExcel {
     }
 
     /**
+     * Sets the data into this object that you want imported into Sentry.
      * @param $data
      * @return $this
      * @throws \Exception
      */
-    public function setData($data) {
+    public function setData( array $data ) {
         if ( is_array($data) ):
             $this->dataType  = 'array';
             $this->dataArray = $data;
@@ -122,6 +136,14 @@ abstract class ImportExcel {
         endif;
 
         throw new \Exception("You need to pass a path to an Excel file, or a multi-dimensional array containing the data to be inserted.");
+    }
+
+    public function setPathVariable( &$path ) {
+        if ( !is_string( $path ) ):
+            throw new \Exception( "You need to pass a string as the path." );
+        endif;
+
+        $this->pathToImportFile = $path;
     }
 
     public function run() {
@@ -146,9 +168,9 @@ abstract class ImportExcel {
      */
     abstract public function getExcelFile();
 
-    abstract protected function importPath($pathToImportFile);
+    abstract protected function importPath( string $pathToImportFile ): ImportExcelResponse;
 
-    abstract protected function importArray();
+    abstract protected function importArray(): ImportExcelResponse;
 
     /**
      * You can see below the parsed XML from Sentry isn't the cleanest, so this method pulls out the info I need into a
@@ -158,7 +180,7 @@ abstract class ImportExcel {
      *
      * @return array
      */
-    protected function parseSoapResponse($soapResponse) {
+    protected function parseSoapResponse( $soapResponse ): array {
         $parsed = new \SimpleXMLElement($soapResponse->ImportExcelResult->any);
 
         $errors = [];

@@ -19,11 +19,12 @@ class ImportExcelSecurityPricingUpdate extends ImportExcel {
      * @param      $pathToImportFile string Used by file_get_contents(). Should be the path to a properly formatted
      *                               Excel import file. See ClearStructure docs for details.
      * @throws \Exception
-     * @return mixed
+     * @return ImportExcelResponse
      */
-    public function importPath($pathToImportFile) {
+    public function importPath( string $pathToImportFile ): ImportExcelResponse {
 
-        $stream = file_get_contents($pathToImportFile);
+        $this->pathVariable = $pathToImportFile;
+        $stream             = file_get_contents( $pathToImportFile );
 
         $function       = 'ImportExcel';
         $culture        = 'en-US';
@@ -36,24 +37,25 @@ class ImportExcelSecurityPricingUpdate extends ImportExcel {
             'createTrades'                => FALSE,
         ];
 
-        $this->soapClient = new \SoapClient($this->wsdl, [
+        $this->soapClient = new \SoapClient( $this->wsdl, [
             'location' => $this->url,
             'uri'      => 'gibberish',
-        ]);
+        ] );
 
-        $soapResponse = $this->soapClient->$function($soapParameters);
+        $soapResponse = $this->soapClient->$function( $soapParameters );
 
-        return $this->parseSoapResponse($soapResponse);
+        return new ImportExcelResponse( $soapResponse, $pathToImportFile );
+
+        //return $this->parseSoapResponse($soapResponse);
     }
 
     /**
-     * @return mixed
+     * @return ImportExcelResponse
      * @throws \Exception
      */
-    protected function importArray() {
+    protected function importArray(): ImportExcelResponse {
         $pathToTempFile = $this->getExcelFile();
-        $response = $this->importPath($pathToTempFile);
-        @unlink( $pathToTempFile );
+        $response       = $this->importPath( $pathToTempFile );
         return $response;
     }
 
