@@ -14,11 +14,11 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
         $pass             = getenv('PASS');
         $pathToImportFile = 'tests/testImportPrices.xlsx';
 
-        $parsedResponse = ImportExcelSecurityPricingUpdate::init($uatUrl, $prodUrl, $user, $pass, TRUE)
-                                                          ->setData($pathToImportFile)
-                                                          ->run();
+        $importExcelReponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
+                                                              ->setData($pathToImportFile)
+                                                              ->run();
 
-        $this->assertEquals(2, $parsedResponse[ 'num' ]);
+        $this->assertEquals( 2, $importExcelReponse->response()[ 'num' ] );
     }
 
 
@@ -49,11 +49,11 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
             'price'                      => 555,
         ];
 
-        $parsedResponse = ImportExcelSecurityPricingUpdate::init($uatUrl, $prodUrl, $user, $pass, TRUE)
-                                                          ->setData($data)
-                                                          ->run();
+        $importExcelReponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
+                                                              ->setData($data)
+                                                              ->run();
 
-        $this->assertEquals(2, $parsedResponse[ 'num' ]);
+        $this->assertEquals( 2, $importExcelReponse->response()[ 'num' ] );
     }
 
 

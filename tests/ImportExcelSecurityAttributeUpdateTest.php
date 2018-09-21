@@ -15,11 +15,11 @@ class ImportExcelSecurityAttributeUpdateTest extends DprmcTestCase {
         $pass             = getenv('PASS');
         $pathToImportFile = 'tests/testImportAttributes.xlsx';
 
-        $parsedResponse = ImportExcelSecurityAttributeUpdate::init($uatUrl, $prodUrl, $user, $pass, TRUE)
-                                                            ->setData($pathToImportFile)
-                                                            ->run();
+        $importExcelReponse = ImportExcelSecurityAttributeUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
+                                                                ->setData($pathToImportFile)
+                                                                ->run();
 
-        $this->assertEquals(2, $parsedResponse[ 'num' ]);
+        $this->assertEquals( 2, $importExcelReponse->response()[ 'num' ] );
     }
 
     /**
@@ -45,11 +45,11 @@ class ImportExcelSecurityAttributeUpdateTest extends DprmcTestCase {
             'Pricing Vendor'    => 'Stifel',
         ];
 
-        $parsedResponse = ImportExcelSecurityAttributeUpdate::init($uatUrl, $prodUrl, $user, $pass, TRUE)
-                                                            ->setData($data)
-                                                            ->run();
+        $importExcelReponse = ImportExcelSecurityAttributeUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
+                                                                ->setData($data)
+                                                                ->run();
 
-        $this->assertEquals(2, $parsedResponse[ 'num' ]);
+        $this->assertEquals( 2, $importExcelReponse->response()[ 'num' ] );
     }
 
 
@@ -117,10 +117,10 @@ class ImportExcelSecurityAttributeUpdateTest extends DprmcTestCase {
             'Pricing Vendor'    => 'Stifel',
         ];
 
-        $parsedResponse = ImportExcelSecurityAttributeUpdate::init($uatUrl, $prodUrl, $user, $pass, TRUE)
-                                                            ->setData($data)
-                                                            ->run();
+        $importExcelReponse = ImportExcelSecurityAttributeUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
+                                                                ->setData($data)
+                                                                ->run();
 
-        $this->assertCount(1, $parsedResponse[ 'warnings' ]);
+        $this->assertCount( 1, $importExcelReponse->response()[ 'warnings' ] );
     }
 }

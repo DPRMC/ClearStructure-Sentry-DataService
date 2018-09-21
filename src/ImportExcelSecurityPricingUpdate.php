@@ -21,7 +21,7 @@ class ImportExcelSecurityPricingUpdate extends ImportExcel {
      * @throws \Exception
      * @return ImportExcelResponse
      */
-    public function importPath( string $pathToImportFile ): ImportExcelResponse {
+    protected function importPath( string $pathToImportFile ): ImportExcelResponse {
 
         $this->pathVariable = $pathToImportFile;
         $stream             = file_get_contents( $pathToImportFile );

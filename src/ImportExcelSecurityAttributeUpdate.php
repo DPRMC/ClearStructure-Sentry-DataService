@@ -18,7 +18,7 @@ class ImportExcelSecurityAttributeUpdate extends ImportExcel {
      * @throws \Exception
      * @return mixed
      */
-    public function importPath( $pathToImportFile ) {
+    protected function importPath( string $pathToImportFile ): ImportExcelResponse {
 
         $stream = file_get_contents( $pathToImportFile );
 
@@ -40,14 +40,14 @@ class ImportExcelSecurityAttributeUpdate extends ImportExcel {
 
         $soapResponse = $this->soapClient->$function( $soapParameters );
 
-        return $this->parseSoapResponse( $soapResponse );
+        return new ImportExcelResponse( $soapResponse, $pathToImportFile );
     }
 
     /**
      * @return mixed
      * @throws \Exception
      */
-    protected function importArray() {
+    protected function importArray(): ImportExcelResponse {
         $pathToTempFile = $this->getExcelFile();
         $response       = $this->importPath( $pathToTempFile );
         @unlink( $pathToTempFile );

@@ -113,11 +113,11 @@ abstract class ImportExcel {
 
     /**
      * Sets the data into this object that you want imported into Sentry.
-     * @param $data
+     * @param mixed $data
      * @return $this
      * @throws \Exception
      */
-    public function setData( array $data ) {
+    public function setData( $data ) {
         if ( is_array($data) ):
             $this->dataType  = 'array';
             $this->dataArray = $data;
@@ -138,15 +138,19 @@ abstract class ImportExcel {
         throw new \Exception("You need to pass a path to an Excel file, or a multi-dimensional array containing the data to be inserted.");
     }
 
-    public function setPathVariable( &$path ) {
-        if ( !is_string( $path ) ):
-            throw new \Exception( "You need to pass a string as the path." );
-        endif;
+//    public function setPathVariable( &$path ) {
+//        if ( !is_string( $path ) ):
+//            throw new \Exception( "You need to pass a string as the path." );
+//        endif;
+//
+//        $this->pathToImportFile = $path;
+//    }
 
-        $this->pathToImportFile = $path;
-    }
-
-    public function run() {
+    /**
+     * @return ImportExcelResponse
+     * @throws \Exception
+     */
+    public function run(): ImportExcelResponse {
         switch ( $this->dataType ):
             case 'array':
                 return $this->importArray($this->dataArray);
@@ -166,10 +170,17 @@ abstract class ImportExcel {
      * file that is getting sent to Sentry.
      * @return mixed
      */
-    abstract public function getExcelFile();
+    //abstract public function getExcelFile();
 
+    /**
+     * @param string $pathToImportFile
+     * @return ImportExcelResponse
+     */
     abstract protected function importPath( string $pathToImportFile ): ImportExcelResponse;
 
+    /**
+     * @return ImportExcelResponse
+     */
     abstract protected function importArray(): ImportExcelResponse;
 
     /**

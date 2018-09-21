@@ -19,11 +19,11 @@ $pass             = 'yourEncryptedSentryPassword';
 $pathToImportFile = 'standard_import_file.xlsx';
 $postToUAT        = true;
 
-$soapResponse = ImportExcel::init( $uatUrl, $prodUrl, $user, $pass, $postToUAT )
+$importExcelResponse = ImportExcel::init( $uatUrl, $prodUrl, $user, $pass, $postToUAT )
                            ->setData($pathToImportFile)
                            ->run();
                            
-// Contents of $soapResponse if everything goes well:
+// Contents of $importExcelResponse->response() if everything goes well:
 Array
 (
     [time] => Carbon\Carbon Object
@@ -44,6 +44,10 @@ Array
         (
         )
 )
+
+// Call path() to get the local filepath of the xlsx that was uploaded to Sentry.
+$importExcelResponse->path();
+
 ```
 
 ## Testing
