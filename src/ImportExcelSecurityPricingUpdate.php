@@ -11,14 +11,9 @@ use DPRMC\Excel;
  */
 class ImportExcelSecurityPricingUpdate extends ImportExcel {
 
-
     /**
-     * Provided a properly formatted Excel import file, this method will import that data into the Sentry system and
-     * return the SOAP response.
-     *
-     * @param      $pathToImportFile string Used by file_get_contents(). Should be the path to a properly formatted
-     *                               Excel import file. See ClearStructure docs for details.
-     * @throws \Exception
+     * Provided a properly formatted Excel import file, this method will import that data into the Sentry system and return the SOAP response.
+     * @param string $pathToImportFile Used by file_get_contents(). Should be the path to a properly formatted Excel import file. See ClearStructure docs for details.
      * @return ImportExcelResponse
      */
     protected function importPath( string $pathToImportFile ): ImportExcelResponse {

@@ -16,7 +16,7 @@ class DprmcTestCase extends TestCase {
         parent::__construct();
 
         try {
-            $dotenv = new Dotenv\Dotenv( __DIR__ );
+            $dotenv = Dotenv\Dotenv::create( __DIR__ );
             $dotenv->load();
         } catch ( Exception $exception ) {
             // Eat the exception.
