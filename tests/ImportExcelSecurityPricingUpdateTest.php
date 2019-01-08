@@ -6,6 +6,7 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
 
     /**
      * @test
+     * @group price
      */
     public function importsTwoPricesFromFile() {
         $uatUrl           = getenv('UAT');
@@ -24,6 +25,7 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
 
     /**
      * @test
+     * @group price
      */
     public function importsTwoPricesFromArray() {
         $uatUrl  = getenv('UAT');
@@ -59,6 +61,7 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
 
     /**
      * @test
+     * @group price
      */
     public function missingImportFileThrowsException() {
 
@@ -80,6 +83,7 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
 
     /**
      * @test
+     * @group price
      */
     public function invalidDataTypeThrowsException() {
         $uatUrl          = getenv('UAT');
@@ -99,6 +103,7 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
 
     /**
      * @test
+     * @group price
      */
     public function prodUrlMatchingUatUrlShouldThrowException() {
         $uatUrl   = getenv('UAT');
@@ -118,6 +123,7 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
 
     /**
      * @test
+     * @group price
      */
     public function notCallingSetDataShouldThrowException() {
         $uatUrl  = getenv('UAT');

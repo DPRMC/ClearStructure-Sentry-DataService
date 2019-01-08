@@ -77,10 +77,10 @@ abstract class ImportExcel {
      * @param bool $uat
      * @throws \Exception
      */
-    public function __construct($uatUrl, $prodUrl, $user, $pass, $uat = FALSE) {
+    public function __construct( $uatUrl, $prodUrl, $user, $pass, $uat = FALSE ) {
 
         if ( $uatUrl == $prodUrl ):
-            throw new \Exception("Your UAT url is the same as your PROD url. That could be dangerous.");
+            throw new \Exception( "Your UAT url is the same as your PROD url. That could be dangerous." );
         endif;
 
         $this->uatUrl   = $uatUrl;
@@ -103,9 +103,9 @@ abstract class ImportExcel {
      * @return mixed
      * @throws \Exception
      */
-    public final static function init($uatUrl, $prodUrl, $user, $pass, $uat = FALSE) {
+    public final static function init( $uatUrl, $prodUrl, $user, $pass, $uat = FALSE ) {
         if ( NULL === static::$_instance ) {
-            static::$_instance = new static($uatUrl, $prodUrl, $user, $pass, $uat);
+            static::$_instance = new static( $uatUrl, $prodUrl, $user, $pass, $uat );
         }
 
         return static::$_instance;
@@ -118,16 +118,16 @@ abstract class ImportExcel {
      * @throws \Exception
      */
     public function setData( $data ) {
-        if ( is_array($data) ):
+        if ( is_array( $data ) ):
             $this->dataType  = 'array';
             $this->dataArray = $data;
             return $this;
         endif;
 
         // PATH WAS PASSED IN.
-        if ( is_string($data) ):
-            if ( FALSE === file_exists($data) ):
-                throw new \Exception("Unable to find the file located at [" . $data . "] and my directory is " . __DIR__);
+        if ( is_string( $data ) ):
+            if ( FALSE === file_exists( $data ) ):
+                throw new \Exception( "Unable to find the file located at [" . $data . "] and my directory is " . __DIR__ );
             endif;
 
             $this->pathToImportFile = $data;
@@ -135,7 +135,7 @@ abstract class ImportExcel {
             return $this;
         endif;
 
-        throw new \Exception("You need to pass a path to an Excel file, or a multi-dimensional array containing the data to be inserted.");
+        throw new \Exception( "You need to pass a path to an Excel file, or a multi-dimensional array containing the data to be inserted." );
     }
 
 //    public function setPathVariable( &$path ) {
@@ -153,15 +153,17 @@ abstract class ImportExcel {
     public function run(): ImportExcelResponse {
         switch ( $this->dataType ):
             case 'array':
-                return $this->importArray($this->dataArray);
+                return $this->importArray( $this->dataArray );
                 break;
 
             case 'path':
-                return $this->importPath($this->pathToImportFile);
+                return $this->importPath( $this->pathToImportFile );
                 break;
-
+            // @codeCoverageIgnoreStart
+            // This should never be called, because an exception would be thrown earlier in the setData() method.
             default:
-                throw new \Exception("You need to set your data source for the import.");
+                throw new \Exception( "You need to set your data source for the import." );
+            // @codeCoverageIgnoreEnd
         endswitch;
     }
 
@@ -192,18 +194,18 @@ abstract class ImportExcel {
      * @return array
      */
     protected function parseSoapResponse( $soapResponse ): array {
-        $parsed = new \SimpleXMLElement($soapResponse->ImportExcelResult->any);
+        $parsed = new \SimpleXMLElement( $soapResponse->ImportExcelResult->any );
 
         $errors = [];
 
-        if ( !is_null($parsed->tables->table->errors->error) ):
+        if ( !is_null( $parsed->tables->table->errors->error ) ):
             foreach ( $parsed->tables->table->errors->error as $i => $error ):
                 $errors[] = (string)$error;
             endforeach;
         endif;
 
         $warnings = [];
-        if ( !is_null($parsed->tables->table->warnings->warning) ):
+        if ( !is_null( $parsed->tables->table->warnings->warning ) ):
             foreach ( $parsed->tables->table->warnings->warning as $i => $warning ):
                 $warnings[] = (string)$warning;
             endforeach;
@@ -211,7 +213,7 @@ abstract class ImportExcel {
 
 
         $parsedResponse = [
-            'time'     => Carbon::parse((string)$parsed->attributes()->time),
+            'time'     => Carbon::parse( (string)$parsed->attributes()->time ),
             'name'     => (string)$parsed->tables->table->attributes()->name,
             'num'      => (int)$parsed->tables->table->import,
             'runtime'  => (float)$parsed->tables->table->RunTime,
