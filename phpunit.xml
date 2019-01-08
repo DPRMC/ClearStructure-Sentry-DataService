@@ -30,10 +30,4 @@
         <log type="coverage-clover" target="build/logs/clover.xml"/>
     </logging>
 
-    <php>
-        <env name="SENTRY_UAT_LOCATION" value="YOUR_UAT_URL"/>
-        <env name="SENTRY_USER" value="YOUR_SENTRY_USERNAME"/>
-        <env name="SENTRY_PASS" value="YOUR_ENCRYPTED_SENTRY_PASSWORD"/>
-        <env name="SENTRY_ACCOUNT" value="A_SENTRY_ACCOUNT_ID"/>
-    </php>
 </phpunit>
