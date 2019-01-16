@@ -9,15 +9,15 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
      * @group price
      */
     public function importsTwoPricesFromFile() {
-        $uatUrl           = getenv('UAT');
-        $prodUrl          = getenv('PROD');
-        $user             = getenv('USER');
-        $pass             = getenv('PASS');
+        $uatUrl           = getenv( 'UAT' );
+        $prodUrl          = getenv( 'PROD' );
+        $user             = getenv( 'USER' );
+        $pass             = getenv( 'PASS' );
         $pathToImportFile = 'tests/testImportPrices.xlsx';
 
         $importExcelResponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
-                                                              ->setData($pathToImportFile)
-                                                              ->run();
+                                                               ->setData( $pathToImportFile )
+                                                               ->run();
 
         $this->assertEquals( 2, $importExcelResponse->response()[ 'num' ] );
     }
@@ -28,10 +28,10 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
      * @group price
      */
     public function importsTwoPricesFromArray() {
-        $uatUrl  = getenv('UAT');
-        $prodUrl = getenv('PROD');
-        $user    = getenv('USER');
-        $pass    = getenv('PASS');
+        $uatUrl  = getenv( 'UAT' );
+        $prodUrl = getenv( 'PROD' );
+        $user    = getenv( 'USER' );
+        $pass    = getenv( 'PASS' );
 
         $data   = [];
         $data[] = [
@@ -52,7 +52,7 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
         ];
 
         $importExcelReponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
-                                                              ->setData($data)
+                                                              ->setData( $data )
                                                               ->run();
 
         $this->assertEquals( 2, $importExcelReponse->response()[ 'num' ] );
@@ -65,19 +65,19 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
      */
     public function missingImportFileThrowsException() {
 
-        $uatUrl           = getenv('UAT');
-        $prodUrl          = getenv('PROD');
-        $user             = getenv('USER');
-        $pass             = getenv('PASS');
+        $uatUrl           = getenv( 'UAT' );
+        $prodUrl          = getenv( 'PROD' );
+        $user             = getenv( 'USER' );
+        $pass             = getenv( 'PASS' );
         $pathToImportFile = 'tests/iDoNotExist.xlsx';
         try {
-            ImportExcelSecurityPricingUpdate::init($uatUrl, $prodUrl, $user, $pass, TRUE)
-                                            ->setData($pathToImportFile)
+            ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
+                                            ->setData( $pathToImportFile )
                                             ->run();
         } catch ( Exception $exception ) {
 
         }
-        $this->assertInstanceOf(Exception::class, $exception);
+        $this->assertInstanceOf( Exception::class, $exception );
     }
 
 
@@ -86,19 +86,19 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
      * @group price
      */
     public function invalidDataTypeThrowsException() {
-        $uatUrl          = getenv('UAT');
-        $prodUrl         = getenv('PROD');
-        $user            = getenv('USER');
-        $pass            = getenv('PASS');
+        $uatUrl          = getenv( 'UAT' );
+        $prodUrl         = getenv( 'PROD' );
+        $user            = getenv( 'USER' );
+        $pass            = getenv( 'PASS' );
         $invalidDataType = 42;
         try {
-            ImportExcelSecurityPricingUpdate::init($uatUrl, $prodUrl, $user, $pass, TRUE)
-                                            ->setData($invalidDataType)
+            ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
+                                            ->setData( $invalidDataType )
                                             ->run();
         } catch ( Exception $exception ) {
 
         }
-        $this->assertInstanceOf(Exception::class, $exception);
+        $this->assertInstanceOf( Exception::class, $exception );
     }
 
     /**
@@ -106,19 +106,15 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
      * @group price
      */
     public function prodUrlMatchingUatUrlShouldThrowException() {
-        $uatUrl   = getenv('UAT');
-        $prodUrl  = getenv('UAT');
-        $user     = getenv('USER');
-        $pass     = getenv('PASS');
+        $this->expectException( Exception::class );
+        $uatUrl   = getenv( 'UAT' );
+        $prodUrl  = getenv( 'UAT' );
+        $user     = getenv( 'USER' );
+        $pass     = getenv( 'PASS' );
         $fakeData = [];
-        try {
-            ImportExcelSecurityPricingUpdate::init($uatUrl, $prodUrl, $user, $pass, TRUE)
-                                            ->setData($fakeData)
-                                            ->run();
-        } catch ( Exception $exception ) {
-
-        }
-        $this->assertInstanceOf(Exception::class, $exception);
+        ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
+                                        ->setData( $fakeData )
+                                        ->run();
     }
 
     /**
@@ -126,17 +122,17 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
      * @group price
      */
     public function notCallingSetDataShouldThrowException() {
-        $uatUrl  = getenv('UAT');
-        $prodUrl = getenv('PROD');
-        $user    = getenv('USER');
-        $pass    = getenv('PASS');
+        $uatUrl  = getenv( 'UAT' );
+        $prodUrl = getenv( 'PROD' );
+        $user    = getenv( 'USER' );
+        $pass    = getenv( 'PASS' );
         try {
-            ImportExcelSecurityPricingUpdate::init($uatUrl, $prodUrl, $user, $pass, TRUE)
+            ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
                                             ->run();
         } catch ( Exception $exception ) {
 
         }
-        $this->assertInstanceOf(Exception::class, $exception);
+        $this->assertInstanceOf( Exception::class, $exception );
     }
 
 
