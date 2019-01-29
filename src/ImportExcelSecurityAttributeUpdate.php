@@ -13,7 +13,7 @@ class ImportExcelSecurityAttributeUpdate extends ImportExcel {
      * Provided a properly formatted Excel import file, this method will import that data into the Sentry system and
      * return the SOAP response.
      *
-     * @param      $pathToImportFile string Used by file_get_contents(). Should be the path to a properly formatted
+     * @param    string $pathToImportFile Used by file_get_contents(). Should be the path to a properly formatted
      *                               Excel import file. See ClearStructure docs for details.
      * @throws \Exception
      * @return mixed

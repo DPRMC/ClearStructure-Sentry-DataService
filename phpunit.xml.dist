@@ -30,4 +30,11 @@
         <log type="coverage-clover" target="build/logs/clover.xml"/>
     </logging>
 
+    <php>
+        <env name="UAT" value="https://uatxxxx.clearstructure.com/xxxx/WebServices/SentryDataService.asmx"/>
+        <env name="PROD" value="https://FAKE.clearstructure.com/WebServices/SentryDataService.asmx"/>
+        <env name="USER" value="your-sentry-id"/>
+        <env name="PASS" value="your-encrypted-sentry-password"/>
+    </php>
+
 </phpunit>
