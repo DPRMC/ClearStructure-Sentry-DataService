@@ -1,74 +1,12 @@
 <?php
 
+
 namespace DPRMC\ClearStructure\Sentry\DataService\Services;
-
-use Carbon\Carbon;
-use DPRMC\Excel;
-
-
+/**
+ * Class ImportExcelSecurityAttributeUpdate
+ * @package DPRMC\ClearStructure\Sentry\DataService\Services
+ */
 class ImportExcelSecurityAttributeUpdate extends ImportExcel {
-
-
-    /**
-     * Provided a properly formatted Excel import file, this method will import that data into the Sentry system and
-     * return the SOAP response.
-     *
-     * @param    string $pathToImportFile Used by file_get_contents(). Should be the path to a properly formatted
-     *                               Excel import file. See ClearStructure docs for details.
-     * @throws \Exception
-     * @return mixed
-     */
-    protected function importPath( string $pathToImportFile ): ImportExcelResponse {
-
-        $stream = file_get_contents( $pathToImportFile );
-
-        $function       = 'ImportExcel';
-        $culture        = 'en-US';
-        $soapParameters = [
-            'cultureString'               => $culture,
-            'userName'                    => $this->user,
-            'password'                    => $this->password,
-            'stream'                      => $stream,
-            'sortTransactionsByTradeDate' => FALSE,
-            'createTrades'                => FALSE,
-        ];
-
-        $this->soapClient = new \SoapClient( $this->wsdl, [
-            'location' => $this->url,
-            'uri'      => 'gibberish',
-        ] );
-
-        $soapResponse = $this->soapClient->$function( $soapParameters );
-
-        return new ImportExcelResponse( $soapResponse, $pathToImportFile );
-    }
-
-    /**
-     * @return mixed
-     * @throws \Exception
-     */
-    protected function importArray(): ImportExcelResponse {
-        $pathToTempFile = $this->getExcelFile();
-        $response       = $this->importPath( $pathToTempFile );
-        @unlink( $pathToTempFile );
-        return $response;
-    }
-
-
-    public function getExcelFile( string $directoryForExcelFile = NULL ) {
-        $tempFilename   = tempnam( $directoryForExcelFile, 'sentry_sec_attribute_' );
-        $tempFileHandle = fopen( $tempFilename, "w" );
-
-        //$tempFileHandle = tmpfile();
-        $metaData     = stream_get_meta_data( $tempFileHandle );
-        $tempFilename = $metaData[ 'uri' ] . '.xlsx';
-        $options      = [
-            'title'    => "Sentry Import File",
-            'subject'  => "Import File",
-            'category' => "import",
-        ];
-        return Excel::simple( $this->dataArray, [], "Security_Attribute_Update", $tempFilename, $options );
-    }
-
-
+    protected $sheetName       = 'Security_Attribute_Update';
+    protected $excelFilePrefix = 'sentry_sec_attribute_';
 }

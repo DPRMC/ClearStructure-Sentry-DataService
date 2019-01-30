@@ -25,7 +25,7 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
 
     /**
      * @test
-     * @group price
+     * @group price1
      */
     public function importsTwoPricesFromArray() {
         $uatUrl  = getenv( 'UAT' );
@@ -56,6 +56,41 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
                                                               ->run();
 
         $this->assertEquals( 2, $importExcelReponse->response()[ 'num' ] );
+    }
+
+
+    /**
+     * @test
+     * @group price2
+     */
+    public function importLotsOfRowsShouldTriggerSplitUploads() {
+        $numToImport = 10;
+        $numPerSplitFile = 6;
+
+        $uatUrl  = getenv( 'UAT' );
+        $prodUrl = getenv( 'PROD' );
+        $user    = getenv( 'USER' );
+        $pass    = getenv( 'PASS' );
+
+        $data   = [];
+        for($i=0; $i<$numToImport; $i++):
+        $data[] = [
+            'scheme_identifier'          => '00075QAF9',
+            'scheme_name'                => 'CUSIP',
+            'market_data_authority_name' => 'DB',
+            'action'                     => 'ADDUPDATE',
+            'as_of_date'                 => '1/1/2018',
+            'price'                      => 444,
+        ];
+        endfor;
+
+        $importExcelResponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
+                                                              ->setRowsForSplitFile($numPerSplitFile)
+                                                              ->setData( $data )
+                                                              ->run();
+
+
+        $this->assertEquals( 10, $importExcelResponse->response()[ 'num' ] );
     }
 
 

@@ -5,7 +5,9 @@ namespace DPRMC\ClearStructure\Sentry\DataService\Services;
 use Carbon\Carbon;
 use DPRMC\Excel;
 
+
 abstract class ImportExcel {
+
     protected static $_instance;
 
     /**
@@ -67,6 +69,11 @@ abstract class ImportExcel {
     // Passed by reference via the setPathVariable() method.
     protected $pathVariable = NULL;
 
+    /**
+     * @var int The Sentry system will timeout if you try to upload too large of a file. If the dataset you want to upload has more rows than $numRowsForSplitFile, then this library will split the upload into smaller batches.
+     */
+    protected $numRowsForSplitFile = 500;
+
 
     /**
      * ImportExcel constructor.
@@ -94,6 +101,24 @@ abstract class ImportExcel {
     }
 
     /**
+     * @param string|NULL $directoryForExcelFile
+     * @return string
+     * @throws \Exception
+     */
+    protected function getExcelFile( string $directoryForExcelFile = NULL ) {
+        $tempFilename   = tempnam( $directoryForExcelFile, $this->excelFilePrefix );
+        $tempFileHandle = fopen( $tempFilename, "w" );
+        $metaData       = stream_get_meta_data( $tempFileHandle );
+        $tempFilename   = $metaData[ 'uri' ] . '.xlsx';
+        $options        = [
+            'title'    => "Sentry Import File",
+            'subject'  => "Import File",
+            'category' => "import",
+        ];
+        return Excel::simple( $this->dataArray, [], $this->sheetName, $tempFilename, $options );
+    }
+
+    /**
      * Creates a single instance of the ImportExcel class.
      * @param $uatUrl
      * @param $prodUrl
@@ -104,9 +129,9 @@ abstract class ImportExcel {
      * @throws \Exception
      */
     public final static function init( $uatUrl, $prodUrl, $user, $pass, $uat = FALSE ) {
-        if ( NULL === static::$_instance ) {
+        if ( NULL === static::$_instance ):
             static::$_instance = new static( $uatUrl, $prodUrl, $user, $pass, $uat );
-        }
+        endif;
 
         return static::$_instance;
     }
@@ -136,6 +161,17 @@ abstract class ImportExcel {
         endif;
 
         throw new \Exception( "You need to pass a path to an Excel file, or a multi-dimensional array containing the data to be inserted." );
+    }
+
+
+    /**
+     * Use this method to tweak the size of the split files until you can complete the upload without errors.
+     * @param int $numRows
+     * @return $this
+     */
+    public function setRowsForSplitFile( int $numRows ) {
+        $this->numRowsForSplitFile = $numRows;
+        return $this;
     }
 
 //    public function setPathVariable( &$path ) {
@@ -177,51 +213,88 @@ abstract class ImportExcel {
     /**
      * @param string $pathToImportFile
      * @return ImportExcelResponse
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
-    abstract protected function importPath( string $pathToImportFile ): ImportExcelResponse;
+    protected function importPath( string $pathToImportFile ): ImportExcelResponse {
+        if ( FALSE === $this->importFileHasTooManyLines( $pathToImportFile ) ):
+            $soapResponse = $this->sendToSentry( $pathToImportFile );
+            return new ImportExcelResponse( $soapResponse, $pathToImportFile );
+        endif;
+
+        $tempFilePaths = Excel::splitSheet( $pathToImportFile, 0, $this->numRowsForSplitFile );
+
+        $soapResponses = [];
+        foreach ( $tempFilePaths as $i => $tempFilePath ):
+            $soapResponses[ $tempFilePath ] = $this->sendToSentry( $tempFilePath );
+        endforeach;
+
+        return $this->consolidateSoapResponsesIntoImportExcelResponse( $soapResponses );
+
+    }
+
+    /**
+     * @param string $pathToImportFile
+     * @return bool
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     */
+    protected function importFileHasTooManyLines( string $pathToImportFile ): bool {
+        // Determine how many lines are in the import file.
+        // If the number of lines is greater than $this->numLinesPerSplitFile, then split it up and process each one.
+        $numLinesInSheet = Excel::numLinesInSheet( $pathToImportFile );
+        if ( $numLinesInSheet < $this->numRowsForSplitFile ):
+            return FALSE;
+        endif;
+        return TRUE;
+    }
+
+    protected function sendToSentry( string $pathToImportFile ): \stdClass {
+        $this->pathVariable = $pathToImportFile;
+        $stream             = file_get_contents( $pathToImportFile );
+
+        $function       = 'ImportExcel';
+        $culture        = 'en-US';
+        $soapParameters = [
+            'cultureString'               => $culture,
+            'userName'                    => $this->user,
+            'password'                    => $this->password,
+            'stream'                      => $stream,
+            'sortTransactionsByTradeDate' => FALSE,
+            'createTrades'                => FALSE,
+        ];
+
+        $this->soapClient = new \SoapClient( $this->wsdl, [
+            'location' => $this->url,
+            'uri'      => 'gibberish',
+        ] );
+
+        return $this->soapClient->$function( $soapParameters );
+    }
 
     /**
      * @return ImportExcelResponse
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
-    abstract protected function importArray(): ImportExcelResponse;
+    protected function importArray(): ImportExcelResponse {
+        $pathToTempFile = $this->getExcelFile();
+        $response       = $this->importPath( $pathToTempFile );
+        @unlink( $pathToTempFile );
+        return $response;
+    }
+
 
     /**
-     * You can see below the parsed XML from Sentry isn't the cleanest, so this method pulls out the info I need into a
-     * nicely formatted array.
-     *
-     * @param $soapResponse
-     *
-     * @return array
+     * @param array $soapResponses
+     * @return ImportExcelResponse
      */
-    protected function parseSoapResponse( $soapResponse ): array {
-        $parsed = new \SimpleXMLElement( $soapResponse->ImportExcelResult->any );
-
-        $errors = [];
-
-        if ( !is_null( $parsed->tables->table->errors->error ) ):
-            foreach ( $parsed->tables->table->errors->error as $i => $error ):
-                $errors[] = (string)$error;
-            endforeach;
-        endif;
-
-        $warnings = [];
-        if ( !is_null( $parsed->tables->table->warnings->warning ) ):
-            foreach ( $parsed->tables->table->warnings->warning as $i => $warning ):
-                $warnings[] = (string)$warning;
-            endforeach;
-        endif;
-
-
-        $parsedResponse = [
-            'time'     => Carbon::parse( (string)$parsed->attributes()->time ),
-            'name'     => (string)$parsed->tables->table->attributes()->name,
-            'num'      => (int)$parsed->tables->table->import,
-            'runtime'  => (float)$parsed->tables->table->RunTime,
-            'errors'   => $errors,
-            'warnings' => $warnings,
-        ];
-
-        return $parsedResponse;
-
+    protected function consolidateSoapResponsesIntoImportExcelResponse( array $soapResponses ): ImportExcelResponse {
+        $importExcelResponse = new ImportExcelResponse();
+        foreach ( $soapResponses as $pathToFile => $soapResponse ):
+            $newImportExcelResponse = new ImportExcelResponse( $soapResponse, $pathToFile );
+            $importExcelResponse->addImportExcelResponseObject( $newImportExcelResponse );
+        endforeach;
+        return $importExcelResponse;
     }
 }
