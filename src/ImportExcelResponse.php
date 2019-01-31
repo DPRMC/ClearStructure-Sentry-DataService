@@ -56,6 +56,20 @@ class ImportExcelResponse {
         return $this->parsedResponse;
     }
 
+    /**
+     * @return array
+     */
+    public function getErrors(): array {
+        return $this->parsedResponse['errors'];
+    }
+
+    /**
+     * @return array
+     */
+    public function getWarnings(): array {
+        return $this->parsedResponse['warnings'];
+    }
+
 
     /**
      * @return string

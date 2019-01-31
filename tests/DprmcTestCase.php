@@ -12,6 +12,8 @@ use PHPUnit\Framework\TestCase;
 
 class DprmcTestCase extends TestCase {
 
+    public $validCusip = '00764MAK3';
+
 
 
 

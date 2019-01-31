@@ -25,7 +25,7 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
 
     /**
      * @test
-     * @group price1
+     * @group price
      */
     public function importsTwoPricesFromArray() {
         $uatUrl  = getenv( 'UAT' );
@@ -35,7 +35,7 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
 
         $data   = [];
         $data[] = [
-            'scheme_identifier'          => '00075QAF9',
+            'scheme_identifier'          => $this->validCusip,
             'scheme_name'                => 'CUSIP',
             'market_data_authority_name' => 'DB',
             'action'                     => 'ADDUPDATE',
@@ -43,7 +43,7 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
             'price'                      => 444,
         ];
         $data[] = [
-            'scheme_identifier'          => '00075XAG2',
+            'scheme_identifier'          => $this->validCusip,
             'scheme_name'                => 'CUSIP',
             'market_data_authority_name' => 'DB',
             'action'                     => 'ADDUPDATE',
@@ -51,20 +51,20 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
             'price'                      => 555,
         ];
 
-        $importExcelReponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
+        $importExcelResponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
                                                               ->setData( $data )
                                                               ->run();
 
-        $this->assertEquals( 2, $importExcelReponse->response()[ 'num' ] );
+        $this->assertEquals( 2, $importExcelResponse->response()[ 'num' ] );
     }
 
 
     /**
      * @test
-     * @group price2
+     * @group price
      */
     public function importLotsOfRowsShouldTriggerSplitUploads() {
-        $numToImport = 10;
+        $numToImport     = 10;
         $numPerSplitFile = 6;
 
         $uatUrl  = getenv( 'UAT' );
@@ -72,23 +72,22 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
         $user    = getenv( 'USER' );
         $pass    = getenv( 'PASS' );
 
-        $data   = [];
-        for($i=0; $i<$numToImport; $i++):
-        $data[] = [
-            'scheme_identifier'          => '00075QAF9',
-            'scheme_name'                => 'CUSIP',
-            'market_data_authority_name' => 'DB',
-            'action'                     => 'ADDUPDATE',
-            'as_of_date'                 => '1/1/2018',
-            'price'                      => 444,
-        ];
+        $data = [];
+        for ( $i = 0; $i < $numToImport; $i++ ):
+            $data[] = [
+                'scheme_identifier'          => $this->validCusip,
+                'scheme_name'                => 'CUSIP',
+                'market_data_authority_name' => 'DB',
+                'action'                     => 'ADDUPDATE',
+                'as_of_date'                 => '1/1/2018',
+                'price'                      => 444,
+            ];
         endfor;
 
         $importExcelResponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
-                                                              ->setRowsForSplitFile($numPerSplitFile)
-                                                              ->setData( $data )
-                                                              ->run();
-
+                                                               ->setRowsForSplitFile( $numPerSplitFile )
+                                                               ->setData( $data )
+                                                               ->run();
 
         $this->assertEquals( 10, $importExcelResponse->response()[ 'num' ] );
     }
@@ -168,6 +167,187 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
 
         }
         $this->assertInstanceOf( Exception::class, $exception );
+    }
+
+
+    /**
+     * @test
+     * @group neg
+     */
+    public function uploadingNegativePricesReturnsError() {
+        $uatUrl  = getenv( 'UAT' );
+        $prodUrl = getenv( 'PROD' );
+        $user    = getenv( 'USER' );
+        $pass    = getenv( 'PASS' );
+
+        $data   = [];
+        $data[] = [
+            'scheme_identifier'          => $this->validCusip,
+            'scheme_name'                => 'CUSIP',
+            'market_data_authority_name' => 'Final',
+            'action'                     => 'ADDUPDATE',
+            'as_of_date'                 => '1/1/2018',
+            'price'                      => -0.06,
+        ];
+
+        /**
+         * @var \DPRMC\ClearStructure\Sentry\DataService\Services\ImportExcelResponse $importExcelResponse
+         */
+        $importExcelResponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
+                                                               ->setData( $data )
+                                                               ->run();
+
+        $errors              = $importExcelResponse->getErrors();
+        $this->assertEquals( "Exception Message: Negative Prices are not allowed.", $errors[ 0 ] );
+    }
+
+
+    /**
+     * @test
+     */
+    public function uploadingInvalidCUSIPReturnsError() {
+        $uatUrl  = getenv( 'UAT' );
+        $prodUrl = getenv( 'PROD' );
+        $user    = getenv( 'USER' );
+        $pass    = getenv( 'PASS' );
+
+        $data   = [];
+        $data[] = [
+            'scheme_identifier'          => 'ZZZ75QAF9',
+            'scheme_name'                => 'CUSIP',
+            'market_data_authority_name' => 'DB',
+            'action'                     => 'ADDUPDATE',
+            'as_of_date'                 => '1/1/2018',
+            'price'                      => 'foo',
+        ];
+
+        /**
+         * @var \DPRMC\ClearStructure\Sentry\DataService\Services\ImportExcelResponse $importExcelResponse
+         */
+        $importExcelResponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
+                                                               ->setData( $data )
+                                                               ->run();
+        $errors              = $importExcelResponse->getErrors();
+        $this->assertEquals( "Exception Message: This security doesn't exist - ZZZ75QAF9.", $errors[ 0 ] );
+    }
+
+
+    /**
+     * @test
+     * This wrecks the Sentry system and causes the "Conversion overflows" error.
+     */
+//    public function uploadingHugePriceReturnsError() {
+//        $uatUrl  = getenv( 'UAT' );
+//        $prodUrl = getenv( 'PROD' );
+//        $user    = getenv( 'USER' );
+//        $pass    = getenv( 'PASS' );
+//
+//        $data   = [];
+//        $data[] = [
+//            'scheme_identifier'          => $this->validCusip,
+//            'scheme_name'                => 'CUSIP',
+//            'market_data_authority_name' => 'DB',
+//            'action'                     => 'ADDUPDATE',
+//            'as_of_date'                 => '1/1/2018',
+//            'price'                      => 9999999999999999999,
+//        ];
+//
+//        /**
+//         * @var \DPRMC\ClearStructure\Sentry\DataService\Services\ImportExcelResponse $importExcelResponse
+//         */
+//        $importExcelResponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
+//                                                               ->setData( $data )
+//                                                               ->run();
+//        $errors              = $importExcelResponse->getErrors();
+//        $this->assertEquals( "Exception Message: Conversion overflows.", $errors[ 0 ] );
+//    }
+
+
+
+
+    /**
+     * @test
+     */
+    public function uploadingBadDateReturnsError() {
+        $uatUrl  = getenv( 'UAT' );
+        $prodUrl = getenv( 'PROD' );
+        $user    = getenv( 'USER' );
+        $pass    = getenv( 'PASS' );
+
+        $data   = [];
+        $data[] = [
+            'scheme_identifier'          => $this->validCusip,
+            'scheme_name'                => 'CUSIP',
+            'market_data_authority_name' => 'DB',
+            'action'                     => 'ADDUPDATE',
+            'as_of_date'                 => '1/32/2018',
+            'price'                      => 74,
+        ];
+
+        /**
+         * @var \DPRMC\ClearStructure\Sentry\DataService\Services\ImportExcelResponse $importExcelResponse
+         */
+        $importExcelResponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
+                                                               ->setData( $data )
+                                                               ->run();
+        $errors              = $importExcelResponse->getErrors();
+        $this->assertEquals( "Exception Message: In Field (as_of_date) the following error occurred - String was not recognized as a valid DateTime.  Inner Exception Message: String was not recognized as a valid DateTime.", $errors[ 0 ] );
+    }
+
+
+    /**
+     * @test
+     * @group bad
+     */
+    public function uploadingMultipleBadDataSetsReturnsMultipleError() {
+        $uatUrl  = getenv( 'UAT' );
+        $prodUrl = getenv( 'PROD' );
+        $user    = getenv( 'USER' );
+        $pass    = getenv( 'PASS' );
+
+        $data   = [];
+        $data[] = [
+            'scheme_identifier'          => $this->validCusip,
+            'scheme_name'                => 'CUSIP',
+            'market_data_authority_name' => 'DB',
+            'action'                     => 'ADDUPDATE',
+            'as_of_date'                 => '1/32/2018',
+            'price'                      => 74,
+        ];
+        $data[] = [
+            'scheme_identifier'          => $this->validCusip,
+            'scheme_name'                => 'CUSIP',
+            'market_data_authority_name' => 'DB',
+            'action'                     => 'ADDUPDATE',
+            'as_of_date'                 => '1/32/2018',
+            'price'                      => 74,
+        ];
+        $data[] = [
+            'scheme_identifier'          => $this->validCusip,
+            'scheme_name'                => 'CUSIP',
+            'market_data_authority_name' => 'DB',
+            'action'                     => 'ADDUPDATE',
+            'as_of_date'                 => '1/32/2018',
+            'price'                      => 74,
+        ];
+        $data[] = [
+            'scheme_identifier'          => $this->validCusip,
+            'scheme_name'                => 'CUSIP',
+            'market_data_authority_name' => 'DB',
+            'action'                     => 'ADDUPDATE',
+            'as_of_date'                 => '1/32/2018',
+            'price'                      => 74,
+        ];
+
+        /**
+         * @var \DPRMC\ClearStructure\Sentry\DataService\Services\ImportExcelResponse $importExcelResponse
+         */
+        $importExcelResponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
+                                                               ->setData( $data )
+                                                               ->run();
+        $errors              = $importExcelResponse->getErrors();
+
+        $this->assertCount(4, $errors);
     }
 
 
