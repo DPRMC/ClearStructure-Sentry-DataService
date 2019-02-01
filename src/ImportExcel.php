@@ -2,9 +2,7 @@
 
 namespace DPRMC\ClearStructure\Sentry\DataService\Services;
 
-use Carbon\Carbon;
 use DPRMC\Excel;
-
 
 abstract class ImportExcel {
 
@@ -36,7 +34,7 @@ abstract class ImportExcel {
     protected $pathToImportFile;
 
     /**
-     * @var SoapClient The client used to communicate with the Sentry API.
+     * @var /SoapClient The client used to communicate with the Sentry API.
      */
     protected $soapClient;
 
@@ -271,6 +269,10 @@ abstract class ImportExcel {
         return TRUE;
     }
 
+    /**
+     * @param string $pathToImportFile
+     * @return \stdClass
+     */
     protected function sendToSentry( string $pathToImportFile ): \stdClass {
         $this->pathVariable = $pathToImportFile;
         $stream             = file_get_contents( $pathToImportFile );

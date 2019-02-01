@@ -2,6 +2,9 @@
 
 use DPRMC\ClearStructure\Sentry\DataService\Services\ImportExcelSecurityPricingUpdate;
 
+/**
+ * @runTestsInSeparateProcesses
+ */
 class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
 
 
@@ -17,7 +20,7 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
 
         $data   = [];
         $data[] = [
-            'scheme_identifier'          => 'ZZZ75QAF9',
+            'scheme_identifier'          => $this->invalidCusip,
             'scheme_name'                => 'CUSIP',
             'market_data_authority_name' => 'DB',
             'action'                     => 'ADDUPDATE',
@@ -228,7 +231,6 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
         $importExcelResponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
                                                                ->setData( $data )
                                                                ->run();
-        print_r( $importExcelResponse );
 
         $errors = $importExcelResponse->getErrors();
         $this->assertEquals( "Exception Message: Negative Prices are not allowed.", $errors[ 0 ] );
@@ -239,7 +241,7 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
 
 
     /**
-     * @test
+     *
      * This wrecks the Sentry system and causes the "Conversion overflows" error.
      */
 //    public function uploadingHugePriceReturnsError() {
@@ -311,7 +313,7 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
 
         $data   = [];
         $data[] = [
-            'scheme_identifier'          => $this->validCusip,
+            'scheme_identifier'          => '00764MAK3',
             'scheme_name'                => 'CUSIP',
             'market_data_authority_name' => 'DB',
             'action'                     => 'ADDUPDATE',

@@ -2,6 +2,9 @@
 
 use DPRMC\ClearStructure\Sentry\DataService\Services\ImportExcelSecurityAttributeUpdate;
 
+/**
+ * @runTestsInSeparateProcesses
+ */
 class ImportExcelExceptionsTest extends DprmcTestCase {
 
 
