@@ -16,20 +16,15 @@ class ImportExcelResponse {
         'errors'   => [],
         'warnings' => [],
     ];
-    protected $pathToFile;
+
 
     /**
      * ImportExcelResponse constructor.
      * @param $soapResponse
-     * @param $pathToFile
      */
-    public function __construct( $soapResponse = NULL, $pathToFile = NULL ) {
+    public function __construct( $soapResponse = NULL ) {
         if ( $soapResponse ):
             $this->parseSoapResponse( $soapResponse );
-        endif;
-
-        if ( $pathToFile ):
-            $this->pathToFile = $pathToFile;
         endif;
     }
 
@@ -70,13 +65,6 @@ class ImportExcelResponse {
         return $this->parsedResponse['warnings'];
     }
 
-
-    /**
-     * @return string
-     */
-    public function path(): string {
-        return $this->pathToFile;
-    }
 
 
     /**

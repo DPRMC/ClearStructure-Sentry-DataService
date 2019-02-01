@@ -223,12 +223,6 @@ abstract class ImportExcel {
         endswitch;
     }
 
-    /**
-     * If you run ImportExcel using an array of data as the input, its sometimes useful for debugging to see the actual
-     * file that is getting sent to Sentry.
-     * @return mixed
-     */
-    //abstract public function getExcelFile();
 
     /**
      * @param string $pathToImportFile
