@@ -357,4 +357,35 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
     }
 
 
+
+    /**
+     * @test
+     */
+    public function getWarningsShouldReturnAnArray() {
+        $uatUrl  = getenv( 'UAT' );
+        $prodUrl = getenv( 'PROD' );
+        $user    = getenv( 'USER' );
+        $pass    = getenv( 'PASS' );
+
+        $data   = [];
+        $data[] = [
+            'scheme_identifier'          => $this->validCusip,
+            'scheme_name'                => 'CUSIP',
+            'market_data_authority_name' => 'DB',
+            'action'                     => 'ADDUPDATE',
+            'as_of_date'                 => '1/31/2018',
+            'price'                      => 74,
+        ];
+
+        /**
+         * @var \DPRMC\ClearStructure\Sentry\DataService\Services\ImportExcelResponse $importExcelResponse
+         */
+        $importExcelResponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
+                                                               ->setData( $data )
+                                                               ->run();
+        $warnings              = $importExcelResponse->getWarnings();
+        $this->assertIsArray($warnings);
+    }
+
+
 }
