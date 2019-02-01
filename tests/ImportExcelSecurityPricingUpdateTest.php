@@ -4,6 +4,38 @@ use DPRMC\ClearStructure\Sentry\DataService\Services\ImportExcelSecurityPricingU
 
 class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
 
+
+    /**
+     * @test
+     * @group invalid
+     */
+    public function uploadingInvalidCUSIPReturnsError() {
+        $uatUrl  = getenv( 'UAT' );
+        $prodUrl = getenv( 'PROD' );
+        $user    = getenv( 'USER' );
+        $pass    = getenv( 'PASS' );
+
+        $data   = [];
+        $data[] = [
+            'scheme_identifier'          => 'ZZZ75QAF9',
+            'scheme_name'                => 'CUSIP',
+            'market_data_authority_name' => 'DB',
+            'action'                     => 'ADDUPDATE',
+            'as_of_date'                 => '1/1/2018',
+            'price'                      => 12,
+        ];
+
+        /**
+         * @var \DPRMC\ClearStructure\Sentry\DataService\Services\ImportExcelResponse $importExcelResponse
+         */
+        $importExcelResponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
+                                                               ->setData( $data )
+                                                               ->run();
+        $errors              = $importExcelResponse->getErrors();
+        $this->assertEquals( "Exception Message: This security doesn't exist - ZZZ75QAF9.", $errors[ 0 ] );
+    }
+
+
     /**
      * @test
      * @group price
@@ -52,8 +84,8 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
         ];
 
         $importExcelResponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
-                                                              ->setData( $data )
-                                                              ->run();
+                                                               ->setData( $data )
+                                                               ->run();
 
         $this->assertEquals( 2, $importExcelResponse->response()[ 'num' ] );
     }
@@ -182,7 +214,7 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
 
         $data   = [];
         $data[] = [
-            'scheme_identifier'          => $this->validCusip,
+            'scheme_identifier'          => '93363RAF3',
             'scheme_name'                => 'CUSIP',
             'market_data_authority_name' => 'Final',
             'action'                     => 'ADDUPDATE',
@@ -196,40 +228,14 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
         $importExcelResponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
                                                                ->setData( $data )
                                                                ->run();
+        print_r( $importExcelResponse );
 
-        $errors              = $importExcelResponse->getErrors();
+        $errors = $importExcelResponse->getErrors();
         $this->assertEquals( "Exception Message: Negative Prices are not allowed.", $errors[ 0 ] );
     }
 
 
-    /**
-     * @test
-     */
-    public function uploadingInvalidCUSIPReturnsError() {
-        $uatUrl  = getenv( 'UAT' );
-        $prodUrl = getenv( 'PROD' );
-        $user    = getenv( 'USER' );
-        $pass    = getenv( 'PASS' );
 
-        $data   = [];
-        $data[] = [
-            'scheme_identifier'          => 'ZZZ75QAF9',
-            'scheme_name'                => 'CUSIP',
-            'market_data_authority_name' => 'DB',
-            'action'                     => 'ADDUPDATE',
-            'as_of_date'                 => '1/1/2018',
-            'price'                      => 'foo',
-        ];
-
-        /**
-         * @var \DPRMC\ClearStructure\Sentry\DataService\Services\ImportExcelResponse $importExcelResponse
-         */
-        $importExcelResponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
-                                                               ->setData( $data )
-                                                               ->run();
-        $errors              = $importExcelResponse->getErrors();
-        $this->assertEquals( "Exception Message: This security doesn't exist - ZZZ75QAF9.", $errors[ 0 ] );
-    }
 
 
     /**
@@ -261,8 +267,6 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
 //        $errors              = $importExcelResponse->getErrors();
 //        $this->assertEquals( "Exception Message: Conversion overflows.", $errors[ 0 ] );
 //    }
-
-
 
 
     /**
@@ -347,7 +351,7 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
                                                                ->run();
         $errors              = $importExcelResponse->getErrors();
 
-        $this->assertCount(4, $errors);
+        $this->assertCount( 4, $errors );
     }
 
 

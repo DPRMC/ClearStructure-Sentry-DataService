@@ -74,6 +74,11 @@ abstract class ImportExcel {
      */
     protected $numRowsForSplitFile = 500;
 
+    /**
+     * @var int The value for ini's default_socket_timeout. I set it arbitrarily large here, because I was consistently getting errors because Sentry's system was slow to respond.
+     */
+    protected $defaultSocketTimeout = 9999999;
+
 
     /**
      * ImportExcel constructor.
@@ -174,6 +179,16 @@ abstract class ImportExcel {
         return $this;
     }
 
+    /**
+     * If for some reason you need to set a fixed socket timeout, use this method before you call run()
+     * @param int $defaultSocketTimeoutInSeconds
+     * @return $this
+     */
+    public function setDefaultSocketTimeout(int $defaultSocketTimeoutInSeconds){
+        $this->defaultSocketTimeout = $defaultSocketTimeoutInSeconds;
+        return $this;
+    }
+
 //    public function setPathVariable( &$path ) {
 //        if ( !is_string( $path ) ):
 //            throw new \Exception( "You need to pass a string as the path." );
@@ -187,17 +202,24 @@ abstract class ImportExcel {
      * @throws \Exception
      */
     public function run(): ImportExcelResponse {
+        $existingDefaultSocketTimeout = ini_get('default_socket_timeout');
+        ini_set('default_socket_timeout', $this->defaultSocketTimeout);
+
         switch ( $this->dataType ):
             case 'array':
-                return $this->importArray( $this->dataArray );
-                break;
+                $importExcelResponse = $this->importArray( $this->dataArray );
+                ini_set('default_socket_timeout', $existingDefaultSocketTimeout);
+                return $importExcelResponse;
 
             case 'path':
-                return $this->importPath( $this->pathToImportFile );
-                break;
+                $importExcelResponse = $this->importPath( $this->pathToImportFile );
+                ini_set('default_socket_timeout', $existingDefaultSocketTimeout);
+                return $importExcelResponse;
+
             // @codeCoverageIgnoreStart
             // This should never be called, because an exception would be thrown earlier in the setData() method.
             default:
+                ini_set('default_socket_timeout', $existingDefaultSocketTimeout);
                 throw new \Exception( "You need to set your data source for the import." );
             // @codeCoverageIgnoreEnd
         endswitch;
