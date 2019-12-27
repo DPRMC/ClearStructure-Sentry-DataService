@@ -10,9 +10,9 @@
     }
   ],
   "require": {
-    "nesbot/carbon": "^1.32",
-    "vlucas/phpdotenv": "^2.5",
-    "dprmc/excel": "^1.0",
+    "nesbot/carbon": "^2.10",
+    "vlucas/phpdotenv": "^3.1",
+    "dprmc/excel": "^2.0",
     "ext-simplexml": "*",
     "ext-soap": "*"
   },
