@@ -10,17 +10,38 @@ use Carbon\Carbon;
  */
 class ImportExcelResponse {
     protected $soapResponse;
-    protected $parsedResponse;
-    protected $pathToFile;
+    protected $parsedResponse = [
+        'num'      => 0,
+        'runtime'  => 0,
+        'errors'   => [],
+        'warnings' => [],
+    ];
+
 
     /**
      * ImportExcelResponse constructor.
      * @param $soapResponse
-     * @param $pathToFile
      */
-    public function __construct( $soapResponse, $pathToFile ) {
-        $this->parseSoapResponse( $soapResponse );
-        $this->pathToFile = $pathToFile;
+    public function __construct( $soapResponse = NULL ) {
+        if ( $soapResponse ):
+            $this->parseSoapResponse( $soapResponse );
+        endif;
+    }
+
+    /**
+     * @param ImportExcelResponse $importExcelResponse
+     */
+    public function addImportExcelResponseObject( ImportExcelResponse $importExcelResponse ) {
+        $this->parsedResponse[ 'num' ]     += $importExcelResponse->parsedResponse[ 'num' ];
+        $this->parsedResponse[ 'runtime' ] += $importExcelResponse->parsedResponse[ 'runtime' ];
+
+        foreach ( $importExcelResponse->parsedResponse[ 'errors' ] as $error ):
+            $this->parsedResponse[ 'errors' ][] = $error;
+        endforeach;
+
+        foreach ( $importExcelResponse->parsedResponse[ 'warnings' ] as $warning ):
+            $this->parsedResponse[ 'warnings' ][] = $warning;
+        endforeach;
     }
 
     /**
@@ -30,13 +51,20 @@ class ImportExcelResponse {
         return $this->parsedResponse;
     }
 
+    /**
+     * @return array
+     */
+    public function getErrors(): array {
+        return $this->parsedResponse['errors'];
+    }
 
     /**
-     * @return string
+     * @return array
      */
-    public function path(): string {
-        return $this->pathToFile;
+    public function getWarnings(): array {
+        return $this->parsedResponse['warnings'];
     }
+
 
 
     /**

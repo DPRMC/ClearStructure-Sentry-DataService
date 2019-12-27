@@ -2,11 +2,15 @@
 
 use DPRMC\ClearStructure\Sentry\DataService\Services\ImportExcelSecurityAttributeUpdate;
 
+/**
+ * @runTestsInSeparateProcesses
+ */
 class ImportExcelSecurityAttributeUpdateTest extends DprmcTestCase {
 
 
     /**
      * @test
+     * @group attribute
      */
     public function importsTwoAttributesFromFile() {
         $uatUrl           = getenv('UAT');
@@ -24,6 +28,7 @@ class ImportExcelSecurityAttributeUpdateTest extends DprmcTestCase {
 
     /**
      * @test
+     * @group attribute
      */
     public function importsTwoAttributesFromArray() {
         $uatUrl  = getenv('UAT');
@@ -55,6 +60,7 @@ class ImportExcelSecurityAttributeUpdateTest extends DprmcTestCase {
 
     /**
      * @test
+     * @group attribute
      */
     public function missingImportFileThrowsException() {
 
@@ -76,6 +82,7 @@ class ImportExcelSecurityAttributeUpdateTest extends DprmcTestCase {
 
     /**
      * @test
+     * @group attribute
      */
     public function invalidDataTypeThrowsException() {
         $uatUrl          = getenv('UAT');
@@ -96,6 +103,7 @@ class ImportExcelSecurityAttributeUpdateTest extends DprmcTestCase {
 
     /**
      * @test
+     * @group attribute
      */
     public function importsTwoAttributesWithInvalidValueFromArrayShouldThrowException() {
         $uatUrl  = getenv('UAT');
@@ -123,4 +131,6 @@ class ImportExcelSecurityAttributeUpdateTest extends DprmcTestCase {
 
         $this->assertCount( 1, $importExcelReponse->response()[ 'warnings' ] );
     }
+
+
 }
