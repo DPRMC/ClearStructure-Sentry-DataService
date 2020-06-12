@@ -2,6 +2,8 @@
 
 namespace DPRMC\ClearStructure\Sentry\DataService\Services;
 
+use Exception;
+use stdClass;
 use DPRMC\Excel;
 
 abstract class ImportExcel {
@@ -85,12 +87,12 @@ abstract class ImportExcel {
      * @param $user
      * @param $pass
      * @param bool $uat
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct( $uatUrl, $prodUrl, $user, $pass, $uat = FALSE ) {
 
         if ( $uatUrl == $prodUrl ):
-            throw new \Exception( "Your UAT url is the same as your PROD url. That could be dangerous." );
+            throw new Exception( "Your UAT url is the same as your PROD url. That could be dangerous." );
         endif;
 
         $this->uatUrl   = $uatUrl;
@@ -106,7 +108,7 @@ abstract class ImportExcel {
     /**
      * @param string|NULL $directoryForExcelFile
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getExcelFile( string $directoryForExcelFile = NULL ) {
         $tempFilename   = tempnam( $directoryForExcelFile, $this->excelFilePrefix );
@@ -129,7 +131,7 @@ abstract class ImportExcel {
      * @param $pass
      * @param bool $uat
      * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
     public final static function init( $uatUrl, $prodUrl, $user, $pass, $uat = FALSE ) {
         if ( NULL === static::$_instance ):
@@ -143,7 +145,7 @@ abstract class ImportExcel {
      * Sets the data into this object that you want imported into Sentry.
      * @param mixed $data
      * @return $this
-     * @throws \Exception
+     * @throws Exception
      */
     public function setData( $data ) {
         if ( is_array( $data ) ):
@@ -155,7 +157,7 @@ abstract class ImportExcel {
         // PATH WAS PASSED IN.
         if ( is_string( $data ) ):
             if ( FALSE === file_exists( $data ) ):
-                throw new \Exception( "Unable to find the file located at [" . $data . "] and my directory is " . __DIR__ );
+                throw new Exception( "Unable to find the file located at [" . $data . "] and my directory is " . __DIR__ );
             endif;
 
             $this->pathToImportFile = $data;
@@ -163,7 +165,7 @@ abstract class ImportExcel {
             return $this;
         endif;
 
-        throw new \Exception( "You need to pass a path to an Excel file, or a multi-dimensional array containing the data to be inserted." );
+        throw new Exception( "You need to pass a path to an Excel file, or a multi-dimensional array containing the data to be inserted." );
     }
 
 
@@ -182,7 +184,7 @@ abstract class ImportExcel {
      * @param int $defaultSocketTimeoutInSeconds
      * @return $this
      */
-    public function setDefaultSocketTimeout(int $defaultSocketTimeoutInSeconds){
+    public function setDefaultSocketTimeout( int $defaultSocketTimeoutInSeconds ) {
         $this->defaultSocketTimeout = $defaultSocketTimeoutInSeconds;
         return $this;
     }
@@ -197,28 +199,28 @@ abstract class ImportExcel {
 
     /**
      * @return ImportExcelResponse
-     * @throws \Exception
+     * @throws Exception
      */
     public function run(): ImportExcelResponse {
-        $existingDefaultSocketTimeout = ini_get('default_socket_timeout');
-        ini_set('default_socket_timeout', $this->defaultSocketTimeout);
+        $existingDefaultSocketTimeout = ini_get( 'default_socket_timeout' );
+        ini_set( 'default_socket_timeout', $this->defaultSocketTimeout );
 
         switch ( $this->dataType ):
             case 'array':
-                $importExcelResponse = $this->importArray( $this->dataArray );
-                ini_set('default_socket_timeout', $existingDefaultSocketTimeout);
+                $importExcelResponse = $this->importArray();
+                ini_set( 'default_socket_timeout', $existingDefaultSocketTimeout );
                 return $importExcelResponse;
 
             case 'path':
                 $importExcelResponse = $this->importPath( $this->pathToImportFile );
-                ini_set('default_socket_timeout', $existingDefaultSocketTimeout);
+                ini_set( 'default_socket_timeout', $existingDefaultSocketTimeout );
                 return $importExcelResponse;
 
             // @codeCoverageIgnoreStart
             // This should never be called, because an exception would be thrown earlier in the setData() method.
             default:
-                ini_set('default_socket_timeout', $existingDefaultSocketTimeout);
-                throw new \Exception( "You need to set your data source for the import." );
+                ini_set( 'default_socket_timeout', $existingDefaultSocketTimeout );
+                throw new Exception( "You need to set your data source for the import." );
             // @codeCoverageIgnoreEnd
         endswitch;
     }
@@ -233,7 +235,7 @@ abstract class ImportExcel {
     protected function importPath( string $pathToImportFile ): ImportExcelResponse {
         if ( FALSE === $this->importFileHasTooManyLines( $pathToImportFile ) ):
             $soapResponse = $this->sendToSentry( $pathToImportFile );
-            return new ImportExcelResponse( $soapResponse, $pathToImportFile );
+            return new ImportExcelResponse( $soapResponse );
         endif;
 
         $tempFilePaths = Excel::splitSheet( $pathToImportFile, 0, $this->numRowsForSplitFile );
@@ -265,7 +267,7 @@ abstract class ImportExcel {
 
     /**
      * @param string $pathToImportFile
-     * @return \stdClass
+     * @return stdClass
      */
     protected function sendToSentry( string $pathToImportFile ): \stdClass {
         $this->pathVariable = $pathToImportFile;
@@ -294,6 +296,7 @@ abstract class ImportExcel {
      * @return ImportExcelResponse
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     * @throws Exception;
      */
     protected function importArray(): ImportExcelResponse {
         $pathToTempFile = $this->getExcelFile();
@@ -310,7 +313,7 @@ abstract class ImportExcel {
     protected function consolidateSoapResponsesIntoImportExcelResponse( array $soapResponses ): ImportExcelResponse {
         $importExcelResponse = new ImportExcelResponse();
         foreach ( $soapResponses as $pathToFile => $soapResponse ):
-            $newImportExcelResponse = new ImportExcelResponse( $soapResponse, $pathToFile );
+            $newImportExcelResponse = new ImportExcelResponse( $soapResponse );
             $importExcelResponse->addImportExcelResponseObject( $newImportExcelResponse );
         endforeach;
         return $importExcelResponse;
