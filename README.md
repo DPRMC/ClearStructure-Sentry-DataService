@@ -50,6 +50,18 @@ $importExcelResponse->path();
 
 ```
 
+## Deleting Data
+```php
+// TODO
+$deleteExcelResponse = DeleteExcel::init( $uatUrl, $prodUrl, $user, $pass, $postToUAT )
+                                  ->setData()  
+                                  ->run();
+
+
+
+
+```
+
 ## Testing
 Want to run the PHPUnit tests?
 ```console
