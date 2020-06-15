@@ -11,7 +11,7 @@ class DeleteExcelSecurityPricingTest extends DprmcTestCase {
     /**
      * @test
      * @group invalid
-     * @group delete1
+     * @group delete
      */
     public function deletingInvalidCUSIPReturnsError() {
 
