@@ -52,12 +52,26 @@ $importExcelResponse->path();
 
 ## Deleting Data
 ```php
-// TODO
-$cusip = 'ABCDEFGH1';
-$date  = Carbon::create(2020,06,15,0,0,0,'America/New_York');
 
-$deleteExcelResponse = DeleteExcel::init( $uatUrl, $prodUrl, $user, $pass, $postToUAT )
-                                  ->setData($cusip, $date)  
+$data   = [];
+$data[] = [
+    'scheme_identifier'          => 42,
+    'scheme_name'                => 'SentryId',
+    'market_data_authority_name' => 'DB',
+    'action'                     => 'DELETE',
+    'as_of_date'                 => '1/1/2018',
+];
+
+$data[] = [
+    'scheme_identifier'          => 'ABCDEFGH1',
+    'scheme_name'                => 'CUSIP',
+    'market_data_authority_name' => 'DB',
+    'action'                     => 'DELETE',
+    'as_of_date'                 => '1/1/2018',
+];
+
+$deleteExcelResponse = DeleteExcelSecurityPricing::init( $uatUrl, $prodUrl, $user, $pass, $postToUAT )
+                                  ->setData($data)  
                                   ->delete();
 
 
