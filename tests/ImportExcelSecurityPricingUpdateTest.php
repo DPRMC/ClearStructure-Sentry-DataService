@@ -15,8 +15,8 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
     public function uploadingInvalidCUSIPReturnsError() {
         $uatUrl  = getenv( 'UAT' );
         $prodUrl = getenv( 'PROD' );
-        $user    = getenv( 'USER' );
-        $pass    = getenv( 'PASS' );
+        $user    = getenv( 'SENTRY_USER' );
+        $pass    = getenv( 'SENTRY_PASS' );
 
         $data   = [];
         $data[] = [
@@ -46,8 +46,8 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
     public function importsTwoPricesFromFile() {
         $uatUrl           = getenv( 'UAT' );
         $prodUrl          = getenv( 'PROD' );
-        $user             = getenv( 'USER' );
-        $pass             = getenv( 'PASS' );
+        $user             = getenv( 'SENTRY_USER' );
+        $pass             = getenv( 'SENTRY_PASS' );
         $pathToImportFile = 'tests/testImportPrices.xlsx';
 
         $importExcelResponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
@@ -65,8 +65,8 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
     public function importsTwoPricesFromArray() {
         $uatUrl  = getenv( 'UAT' );
         $prodUrl = getenv( 'PROD' );
-        $user    = getenv( 'USER' );
-        $pass    = getenv( 'PASS' );
+        $user    = getenv( 'SENTRY_USER' );
+        $pass    = getenv( 'SENTRY_PASS' );
 
         $data   = [];
         $data[] = [
@@ -104,8 +104,8 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
 
         $uatUrl  = getenv( 'UAT' );
         $prodUrl = getenv( 'PROD' );
-        $user    = getenv( 'USER' );
-        $pass    = getenv( 'PASS' );
+        $user    = getenv( 'SENTRY_USER' );
+        $pass    = getenv( 'SENTRY_PASS' );
 
         $data = [];
         for ( $i = 0; $i < $numToImport; $i++ ):
@@ -136,8 +136,8 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
 
         $uatUrl           = getenv( 'UAT' );
         $prodUrl          = getenv( 'PROD' );
-        $user             = getenv( 'USER' );
-        $pass             = getenv( 'PASS' );
+        $user             = getenv( 'SENTRY_USER' );
+        $pass             = getenv( 'SENTRY_PASS' );
         $pathToImportFile = 'tests/iDoNotExist.xlsx';
         try {
             ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
@@ -157,8 +157,8 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
     public function invalidDataTypeThrowsException() {
         $uatUrl          = getenv( 'UAT' );
         $prodUrl         = getenv( 'PROD' );
-        $user            = getenv( 'USER' );
-        $pass            = getenv( 'PASS' );
+        $user            = getenv( 'SENTRY_USER' );
+        $pass            = getenv( 'SENTRY_PASS' );
         $invalidDataType = 42;
         try {
             ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
@@ -178,8 +178,8 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
         $this->expectException( Exception::class );
         $uatUrl   = getenv( 'UAT' );
         $prodUrl  = getenv( 'UAT' );
-        $user     = getenv( 'USER' );
-        $pass     = getenv( 'PASS' );
+        $user     = getenv( 'SENTRY_USER' );
+        $pass     = getenv( 'SENTRY_PASS' );
         $fakeData = [];
         ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
                                         ->setData( $fakeData )
@@ -193,8 +193,8 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
     public function notCallingSetDataShouldThrowException() {
         $uatUrl  = getenv( 'UAT' );
         $prodUrl = getenv( 'PROD' );
-        $user    = getenv( 'USER' );
-        $pass    = getenv( 'PASS' );
+        $user    = getenv( 'SENTRY_USER' );
+        $pass    = getenv( 'SENTRY_PASS' );
         try {
             ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
                                             ->run();
@@ -212,8 +212,8 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
     public function uploadingNegativePricesReturnsError() {
         $uatUrl  = getenv( 'UAT' );
         $prodUrl = getenv( 'PROD' );
-        $user    = getenv( 'USER' );
-        $pass    = getenv( 'PASS' );
+        $user    = getenv( 'SENTRY_USER' );
+        $pass    = getenv( 'SENTRY_PASS' );
 
         $data   = [];
         $data[] = [
@@ -277,8 +277,8 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
     public function uploadingBadDateReturnsError() {
         $uatUrl  = getenv( 'UAT' );
         $prodUrl = getenv( 'PROD' );
-        $user    = getenv( 'USER' );
-        $pass    = getenv( 'PASS' );
+        $user    = getenv( 'SENTRY_USER' );
+        $pass    = getenv( 'SENTRY_PASS' );
 
         $data   = [];
         $data[] = [
@@ -308,8 +308,8 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
     public function uploadingMultipleBadDataSetsReturnsMultipleError() {
         $uatUrl  = getenv( 'UAT' );
         $prodUrl = getenv( 'PROD' );
-        $user    = getenv( 'USER' );
-        $pass    = getenv( 'PASS' );
+        $user    = getenv( 'SENTRY_USER' );
+        $pass    = getenv( 'SENTRY_PASS' );
 
         $data   = [];
         $data[] = [
@@ -364,8 +364,8 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
     public function getWarningsShouldReturnAnArray() {
         $uatUrl  = getenv( 'UAT' );
         $prodUrl = getenv( 'PROD' );
-        $user    = getenv( 'USER' );
-        $pass    = getenv( 'PASS' );
+        $user    = getenv( 'SENTRY_USER' );
+        $pass    = getenv( 'SENTRY_PASS' );
 
         $data   = [];
         $data[] = [

@@ -53,9 +53,12 @@ $importExcelResponse->path();
 ## Deleting Data
 ```php
 // TODO
+$cusip = 'ABCDEFGH1';
+$date  = Carbon::create(2020,06,15,0,0,0,'America/New_York');
+
 $deleteExcelResponse = DeleteExcel::init( $uatUrl, $prodUrl, $user, $pass, $postToUAT )
-                                  ->setData()  
-                                  ->run();
+                                  ->setData($cusip, $date)  
+                                  ->delete();
 
 
 

@@ -16,8 +16,8 @@ class ImportExcelExceptionsTest extends DprmcTestCase {
         $this->expectException( Exception::class );
         $uatUrl           = getenv( 'UAT' );
         $prodUrl          = getenv( 'UAT' );
-        $user             = getenv( 'USER' );
-        $pass             = getenv( 'PASS' );
+        $user             = getenv( 'SENTRY_USER' );
+        $pass             = getenv( 'SENTRY_PASS' );
         $pathToImportFile = 'tests/testImportAttributes.xlsx';
 
         ImportExcelSecurityAttributeUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
@@ -34,8 +34,8 @@ class ImportExcelExceptionsTest extends DprmcTestCase {
         $this->expectException( Exception::class );
         $uatUrl           = getenv( 'UAT' );
         $prodUrl          = getenv( 'PROD' );
-        $user             = getenv( 'USER' );
-        $pass             = getenv( 'PASS' );
+        $user             = getenv( 'SENTRY_USER' );
+        $pass             = getenv( 'SENTRY_PASS' );
 
         ImportExcelSecurityAttributeUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
                                           ->setData( (object)'foo'  )

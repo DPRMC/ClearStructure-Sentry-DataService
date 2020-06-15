@@ -15,8 +15,8 @@ class ImportExcelSecurityAttributeUpdateTest extends DprmcTestCase {
     public function importsTwoAttributesFromFile() {
         $uatUrl           = getenv('UAT');
         $prodUrl          = getenv('PROD');
-        $user             = getenv('USER');
-        $pass             = getenv('PASS');
+        $user             = getenv('SENTRY_USER');
+        $pass             = getenv('SENTRY_PASS');
         $pathToImportFile = 'tests/testImportAttributes.xlsx';
 
         $importExcelReponse = ImportExcelSecurityAttributeUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
@@ -33,8 +33,8 @@ class ImportExcelSecurityAttributeUpdateTest extends DprmcTestCase {
     public function importsTwoAttributesFromArray() {
         $uatUrl  = getenv('UAT');
         $prodUrl = getenv('PROD');
-        $user    = getenv('USER');
-        $pass    = getenv('PASS');
+        $user    = getenv('SENTRY_USER');
+        $pass    = getenv('SENTRY_PASS');
 
         $data   = [];
         $data[] = [
@@ -66,8 +66,8 @@ class ImportExcelSecurityAttributeUpdateTest extends DprmcTestCase {
 
         $uatUrl           = getenv('UAT');
         $prodUrl          = getenv('PROD');
-        $user             = getenv('USER');
-        $pass             = getenv('PASS');
+        $user             = getenv('SENTRY_USER');
+        $pass             = getenv('SENTRY_PASS');
         $pathToImportFile = 'tests/iDoNotExist.xlsx';
         try {
             ImportExcelSecurityAttributeUpdate::init($uatUrl, $prodUrl, $user, $pass, TRUE)
@@ -87,8 +87,8 @@ class ImportExcelSecurityAttributeUpdateTest extends DprmcTestCase {
     public function invalidDataTypeThrowsException() {
         $uatUrl          = getenv('UAT');
         $prodUrl         = getenv('PROD');
-        $user            = getenv('USER');
-        $pass            = getenv('PASS');
+        $user            = getenv('SENTRY_USER');
+        $pass            = getenv('SENTRY_PASS');
         $invalidDataType = 42;
         try {
             ImportExcelSecurityAttributeUpdate::init($uatUrl, $prodUrl, $user, $pass, TRUE)
@@ -108,8 +108,8 @@ class ImportExcelSecurityAttributeUpdateTest extends DprmcTestCase {
     public function importsTwoAttributesWithInvalidValueFromArrayShouldThrowException() {
         $uatUrl  = getenv('UAT');
         $prodUrl = getenv('PROD');
-        $user    = getenv('USER');
-        $pass    = getenv('PASS');
+        $user    = getenv('SENTRY_USER');
+        $pass    = getenv('SENTRY_PASS');
 
         $data   = [];
         $data[] = [
