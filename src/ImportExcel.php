@@ -5,6 +5,7 @@ namespace DPRMC\ClearStructure\Sentry\DataService\Services;
 use Exception;
 use stdClass;
 use DPRMC\Excel;
+use SoapFault;
 
 abstract class ImportExcel {
 
@@ -200,6 +201,7 @@ abstract class ImportExcel {
     /**
      * @return ImportExcelResponse
      * @throws Exception
+     * @throws SoapFault
      */
     public function run(): ImportExcelResponse {
         $existingDefaultSocketTimeout = ini_get( 'default_socket_timeout' );
@@ -231,6 +233,7 @@ abstract class ImportExcel {
      * @return ImportExcelResponse
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     * @throws SoapFault
      */
     protected function importPath( string $pathToImportFile ): ImportExcelResponse {
         if ( FALSE === $this->importFileHasTooManyLines( $pathToImportFile ) ):
@@ -268,6 +271,7 @@ abstract class ImportExcel {
     /**
      * @param string $pathToImportFile
      * @return stdClass
+     * @throws SoapFault
      */
     protected function sendToSentry( string $pathToImportFile ): \stdClass {
         $this->pathVariable = $pathToImportFile;
