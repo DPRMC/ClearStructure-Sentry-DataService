@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "dprmc/excel",
-            "version": "v2.0.14",
+            "version": "v2.0.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DPRMC/Excel.git",
-                "reference": "4849c6d2bb780fefb0959fbfdee7bb7ebf9536d9"
+                "reference": "355454913bd2816fe1e8c168c915ee94ac10b383"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DPRMC/Excel/zipball/4849c6d2bb780fefb0959fbfdee7bb7ebf9536d9",
-                "reference": "4849c6d2bb780fefb0959fbfdee7bb7ebf9536d9",
+                "url": "https://api.github.com/repos/DPRMC/Excel/zipball/355454913bd2816fe1e8c168c915ee94ac10b383",
+                "reference": "355454913bd2816fe1e8c168c915ee94ac10b383",
                 "shasum": ""
             },
             "require": {
@@ -45,7 +45,7 @@
                 }
             ],
             "description": "A php wrapper around the PhpSpreadsheet library.",
-            "time": "2020-07-21T23:02:26+00:00"
+            "time": "2020-07-22T00:07:34+00:00"
         },
         {
             "name": "maennchen/zipstream-php",

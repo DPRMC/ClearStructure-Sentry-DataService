@@ -4,7 +4,7 @@ namespace DPRMC\ClearStructure\Sentry\DataService\Services;
 
 use Exception;
 use stdClass;
-use DPRMC\Excel;
+use DPRMC\Excel\Excel;
 use SoapFault;
 
 abstract class ImportExcel {
