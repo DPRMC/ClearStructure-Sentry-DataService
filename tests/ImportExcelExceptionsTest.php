@@ -1,4 +1,5 @@
 <?php
+namespace DPRMC\Tests;
 
 use DPRMC\ClearStructure\Sentry\DataService\Services\ImportExcelSecurityAttributeUpdate;
 
@@ -13,7 +14,7 @@ class ImportExcelExceptionsTest extends DprmcTestCase {
      * @group error
      */
     public function uatAndProdUrlsBeingIdenticalShouldThrowException() {
-        $this->expectException( Exception::class );
+        $this->expectException( \Exception::class );
         $uatUrl           = getenv( 'UAT' );
         $prodUrl          = getenv( 'UAT' );
         $user             = getenv( 'SENTRY_USER' );
@@ -31,7 +32,7 @@ class ImportExcelExceptionsTest extends DprmcTestCase {
      * @group error
      */
     public function settingDataAsBooleanShouldThrowException() {
-        $this->expectException( Exception::class );
+        $this->expectException( \Exception::class );
         $uatUrl           = getenv( 'UAT' );
         $prodUrl          = getenv( 'PROD' );
         $user             = getenv( 'SENTRY_USER' );

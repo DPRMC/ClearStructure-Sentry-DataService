@@ -1,6 +1,8 @@
 <?php
+namespace DPRMC\Tests;
 
 use DPRMC\ClearStructure\Sentry\DataService\Services\DeleteExcelSecurityPricing;
+
 
 /**
  * @runTestsInSeparateProcesses

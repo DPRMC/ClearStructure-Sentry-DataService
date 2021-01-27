@@ -1,5 +1,5 @@
 <?php
-
+namespace DPRMC\Tests;
 use DPRMC\ClearStructure\Sentry\DataService\Services\ImportExcelSecurityAttributeUpdate;
 
 /**
@@ -73,10 +73,10 @@ class ImportExcelSecurityAttributeUpdateTest extends DprmcTestCase {
             ImportExcelSecurityAttributeUpdate::init($uatUrl, $prodUrl, $user, $pass, TRUE)
                                               ->setData($pathToImportFile)
                                               ->run();
-        } catch ( Exception $exception ) {
+        } catch ( \Exception $exception ) {
 
         }
-        $this->assertInstanceOf(Exception::class, $exception);
+        $this->assertInstanceOf(\Exception::class, $exception);
     }
 
 
@@ -94,10 +94,10 @@ class ImportExcelSecurityAttributeUpdateTest extends DprmcTestCase {
             ImportExcelSecurityAttributeUpdate::init($uatUrl, $prodUrl, $user, $pass, TRUE)
                                               ->setData($invalidDataType)
                                               ->run();
-        } catch ( Exception $exception ) {
+        } catch ( \Exception $exception ) {
 
         }
-        $this->assertInstanceOf(Exception::class, $exception);
+        $this->assertInstanceOf(\Exception::class, $exception);
     }
 
 

@@ -1,5 +1,7 @@
 <?php
 
+namespace DPRMC\Tests;
+
 use DPRMC\ClearStructure\Sentry\DataService\Services\ImportExcelSecurityPricingUpdate;
 
 /**
@@ -143,10 +145,10 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
             ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
                                             ->setData( $pathToImportFile )
                                             ->run();
-        } catch ( Exception $exception ) {
+        } catch ( \Exception $exception ) {
 
         }
-        $this->assertInstanceOf( Exception::class, $exception );
+        $this->assertInstanceOf( \Exception::class, $exception );
     }
 
 
@@ -164,10 +166,10 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
             ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
                                             ->setData( $invalidDataType )
                                             ->run();
-        } catch ( Exception $exception ) {
+        } catch ( \Exception $exception ) {
 
         }
-        $this->assertInstanceOf( Exception::class, $exception );
+        $this->assertInstanceOf( \Exception::class, $exception );
     }
 
     /**
@@ -175,7 +177,7 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
      * @group price
      */
     public function prodUrlMatchingUatUrlShouldThrowException() {
-        $this->expectException( Exception::class );
+        $this->expectException( \Exception::class );
         $uatUrl   = getenv( 'UAT' );
         $prodUrl  = getenv( 'UAT' );
         $user     = getenv( 'SENTRY_USER' );
@@ -198,10 +200,10 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
         try {
             ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
                                             ->run();
-        } catch ( Exception $exception ) {
+        } catch ( \Exception $exception ) {
 
         }
-        $this->assertInstanceOf( Exception::class, $exception );
+        $this->assertInstanceOf( \Exception::class, $exception );
     }
 
 
@@ -357,7 +359,6 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
     }
 
 
-
     /**
      * @test
      */
@@ -383,8 +384,8 @@ class ImportExcelSecurityPricingUpdateTest extends DprmcTestCase {
         $importExcelResponse = ImportExcelSecurityPricingUpdate::init( $uatUrl, $prodUrl, $user, $pass, TRUE )
                                                                ->setData( $data )
                                                                ->run();
-        $warnings              = $importExcelResponse->getWarnings();
-        $this->assertIsArray($warnings);
+        $warnings            = $importExcelResponse->getWarnings();
+        $this->assertIsArray( $warnings );
     }
 
 

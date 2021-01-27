@@ -23,6 +23,14 @@
     "classmap": [
       "src/",
       "tests/"
-    ]
+    ],
+    "psr-4": {
+      "DPRMC\\ClearStructure\\Sentry\\DataService\\Services\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "DPRMC\\Tests\\": "tests/"
+    }
   }
 }
