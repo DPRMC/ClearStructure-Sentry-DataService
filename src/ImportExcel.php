@@ -121,6 +121,7 @@ abstract class ImportExcel {
             'subject'  => "Import File",
             'category' => "import",
         ];
+
         return Excel::simple( $this->dataArray, [], $this->sheetName, $tempFilename, $options );
     }
 
