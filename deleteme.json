@@ -1,0 +1,14 @@
+[
+  {
+    "Import Action": "New",
+    "Portfolio Short Name": "STS",
+    "Security Identifier Scheme": "CUSIP",
+    "Security Identifier": "86359ACC5",
+    "Transaction Code": "INADJ",
+    "Trade Date": "2021-01-27",
+    "Settle Date": "2021-02-02",
+    "Cash Receipt Date": "2021-02-02",
+    "Signed Amount": "5.91",
+    "Currency Code": "USD"
+  }
+]
