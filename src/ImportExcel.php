@@ -132,11 +132,12 @@ abstract class ImportExcel {
      * @throws \Exception
      */
     public final static function init( $uatUrl, $prodUrl, $user, $pass, $uat = FALSE ) {
-        if ( NULL === static::$_instance ):
-            static::$_instance = new static( $uatUrl, $prodUrl, $user, $pass, $uat );
-        endif;
-
-        return static::$_instance;
+        return static::$_instance = new static( $uatUrl, $prodUrl, $user, $pass, $uat );
+//        if ( NULL === static::$_instance ):
+//            static::$_instance = new static( $uatUrl, $prodUrl, $user, $pass, $uat );
+//        endif;
+//
+//        return static::$_instance;
     }
 
     /**
@@ -182,7 +183,7 @@ abstract class ImportExcel {
      * @param int $defaultSocketTimeoutInSeconds
      * @return $this
      */
-    public function setDefaultSocketTimeout(int $defaultSocketTimeoutInSeconds){
+    public function setDefaultSocketTimeout( int $defaultSocketTimeoutInSeconds ) {
         $this->defaultSocketTimeout = $defaultSocketTimeoutInSeconds;
         return $this;
     }
@@ -200,24 +201,24 @@ abstract class ImportExcel {
      * @throws \Exception
      */
     public function run(): ImportExcelResponse {
-        $existingDefaultSocketTimeout = ini_get('default_socket_timeout');
-        ini_set('default_socket_timeout', $this->defaultSocketTimeout);
+        $existingDefaultSocketTimeout = ini_get( 'default_socket_timeout' );
+        ini_set( 'default_socket_timeout', $this->defaultSocketTimeout );
 
         switch ( $this->dataType ):
             case 'array':
                 $importExcelResponse = $this->importArray( $this->dataArray );
-                ini_set('default_socket_timeout', $existingDefaultSocketTimeout);
+                ini_set( 'default_socket_timeout', $existingDefaultSocketTimeout );
                 return $importExcelResponse;
 
             case 'path':
                 $importExcelResponse = $this->importPath( $this->pathToImportFile );
-                ini_set('default_socket_timeout', $existingDefaultSocketTimeout);
+                ini_set( 'default_socket_timeout', $existingDefaultSocketTimeout );
                 return $importExcelResponse;
 
             // @codeCoverageIgnoreStart
             // This should never be called, because an exception would be thrown earlier in the setData() method.
             default:
-                ini_set('default_socket_timeout', $existingDefaultSocketTimeout);
+                ini_set( 'default_socket_timeout', $existingDefaultSocketTimeout );
                 throw new \Exception( "You need to set your data source for the import." );
             // @codeCoverageIgnoreEnd
         endswitch;
