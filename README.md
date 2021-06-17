@@ -50,6 +50,35 @@ $importExcelResponse->path();
 
 ```
 
+## Deleting Data
+```php
+
+$data   = [];
+$data[] = [
+    'scheme_identifier'          => 42,
+    'scheme_name'                => 'SentryId',
+    'market_data_authority_name' => 'DB',
+    'action'                     => 'DELETE',
+    'as_of_date'                 => '1/1/2018',
+];
+
+$data[] = [
+    'scheme_identifier'          => 'ABCDEFGH1',
+    'scheme_name'                => 'CUSIP',
+    'market_data_authority_name' => 'DB',
+    'action'                     => 'DELETE',
+    'as_of_date'                 => '1/1/2018',
+];
+
+$deleteExcelResponse = DeleteExcelSecurityPricing::init( $uatUrl, $prodUrl, $user, $pass, $postToUAT )
+                                  ->setData($data)  
+                                  ->delete();
+
+
+
+
+```
+
 ## Testing
 Want to run the PHPUnit tests?
 ```console

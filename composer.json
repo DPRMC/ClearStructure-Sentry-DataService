@@ -10,20 +10,27 @@
     }
   ],
   "require": {
-    "ext-simplexml": "*",
-    "ext-soap": "*",
+    "nesbot/carbon": "^2.35",
     "dprmc/excel": "^2.0",
-    "vlucas/phpdotenv": "^3.1",
-    "nesbot/carbon": "^1.36.2"
+    "ext-simplexml": "*",
+    "ext-soap": "*"
   },
   "require-dev": {
-    "php-coveralls/php-coveralls": "^2.1",
-    "phpunit/phpunit": "^7.5"
+    "phpunit/phpunit": "^9.2",
+    "php-coveralls/php-coveralls": "^2.2"
   },
   "autoload": {
     "classmap": [
       "src/",
       "tests/"
-    ]
+    ],
+    "psr-4": {
+      "DPRMC\\ClearStructure\\Sentry\\DataService\\Services\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "DPRMC\\Tests\\": "tests/"
+    }
   }
 }
