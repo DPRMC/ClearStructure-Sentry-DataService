@@ -2,7 +2,7 @@
 
 namespace DPRMC\ClearStructure\Sentry\DataService\Services;
 
-use DPRMC\Excel;
+use DPRMC\Excel\Excel;
 
 abstract class ImportExcel {
 
