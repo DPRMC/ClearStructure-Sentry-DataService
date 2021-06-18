@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "dprmc/excel",
-            "version": "v2.0.23",
+            "version": "v2.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DPRMC/Excel.git",
-                "reference": "6e3defd5c7d12ea80216be524876be676bcae6e0"
+                "reference": "f7211b2eeb83b0df8144cb46ed5aeb52cba5914a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DPRMC/Excel/zipball/6e3defd5c7d12ea80216be524876be676bcae6e0",
-                "reference": "6e3defd5c7d12ea80216be524876be676bcae6e0",
+                "url": "https://api.github.com/repos/DPRMC/Excel/zipball/f7211b2eeb83b0df8144cb46ed5aeb52cba5914a",
+                "reference": "f7211b2eeb83b0df8144cb46ed5aeb52cba5914a",
                 "shasum": ""
             },
             "require": {
@@ -31,7 +31,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "DPRMC\\": "src"
+                    "DPRMC\\Excel\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -47,9 +47,9 @@
             "description": "A php wrapper around the PhpSpreadsheet library.",
             "support": {
                 "issues": "https://github.com/DPRMC/Excel/issues",
-                "source": "https://github.com/DPRMC/Excel/tree/v2.0.23"
+                "source": "https://github.com/DPRMC/Excel/tree/v2.0.24"
             },
-            "time": "2021-06-18T19:18:00+00:00"
+            "time": "2021-06-18T20:45:16+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
