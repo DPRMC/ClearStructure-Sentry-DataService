@@ -286,9 +286,17 @@ abstract class ImportExcel {
         $this->soapClient = new \SoapClient( $this->wsdl, [
             'location' => $this->url,
             'uri'      => 'gibberish',
+            'trace'    => TRUE,
         ] );
 
-        return $this->soapClient->$function( $soapParameters );
+        try {
+            return $this->soapClient->$function( $soapParameters );
+        } catch ( \Exception $exception ) {
+            echo "\n\nERROR FROM SOAP CLIENT: \n";
+            echo "Response:\n" . $this->soapClient->__getLastResponse() . "\n";
+            throw $exception;
+        }
+
     }
 
     /**
