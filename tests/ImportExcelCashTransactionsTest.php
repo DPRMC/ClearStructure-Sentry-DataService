@@ -2,6 +2,7 @@
 
 namespace DPRMC\Tests;
 
+use Carbon\Carbon;
 use DPRMC\ClearStructure\Sentry\DataService\Services\ImportExcelCashTransactions;
 
 /**
@@ -20,6 +21,10 @@ class ImportExcelCashTransactionsTest extends DprmcTestCase {
         $user    = getenv( 'SENTRY_USER' );
         $pass    = getenv( 'SENTRY_PASS' );
 
+        // This needs to be in the future, or you will get an error like:
+        // "The settle date 2/2/2021 violates the account lock for portfolio 'STS'."
+        $nextYear = Carbon::today()->addYear()->year;
+
         $data   = [];
         $data[] = [
             'Sentry ID' => '4883',
@@ -28,9 +33,9 @@ class ImportExcelCashTransactionsTest extends DprmcTestCase {
             'Security Identifier Scheme' => 'CUSIP',
             'Security Identifier'        => '86359ACC5',
             'Transaction Code'           => 'INADJ',
-            'Trade Date'                 => '2021-01-27',
-            'Settle Date'                => '2021-02-02',
-            'Cash Receipt Date'          => '2021-02-02',
+            'Trade Date'                 => $nextYear . '-01-27',
+            'Settle Date'                => $nextYear . '-02-02',
+            'Cash Receipt Date'          => $nextYear . '-02-02',
             'Signed Amount'              => '5.91',
             'Currency Code'              => 'USD',
         ];
@@ -43,6 +48,7 @@ class ImportExcelCashTransactionsTest extends DprmcTestCase {
                                                           ->setData( $data )
                                                           ->run();
         $errors              = $importExcelResponse->getErrors();
+
         $this->assertEmpty($errors);
     }
 

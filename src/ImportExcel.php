@@ -109,7 +109,7 @@ abstract class ImportExcel {
      * @throws \Exception
      */
     protected function getExcelFile( string $directoryForExcelFile = NULL ) {
-        $tempFilename   = tempnam( $directoryForExcelFile, $this->excelFilePrefix );
+        $tempFilename   = tempnam( $directoryForExcelFile ?? sys_get_temp_dir(), $this->excelFilePrefix );
         $tempFileHandle = fopen( $tempFilename, "w" );
         $metaData       = stream_get_meta_data( $tempFileHandle );
         $tempFilename   = $metaData[ 'uri' ] . '.xlsx';
