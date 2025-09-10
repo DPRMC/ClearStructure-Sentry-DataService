@@ -300,11 +300,22 @@ abstract class ImportExcel {
             'createTrades'                => FALSE,
         ];
 
-        $this->soapClient = new \SoapClient( $this->wsdl, [
+        $options = [
+            'trace' => true,
+            'exceptions' => true,
+            'ssl_method' => SOAP_SSL_METHOD_TLS,
+            'stream_context' => stream_context_create([
+                                                          'ssl' => [
+                                                              'verify_peer' => false,
+                                                              //'verify_peer_name' => false,
+                                                              //'allow_self_signed' => true
+                                                          ]
+                                                      ]),
             'location' => $this->url,
             'uri'      => 'gibberish',
-            'trace'    => TRUE,
-        ] );
+        ];
+
+        $this->soapClient = new \SoapClient( $this->wsdl, $options );
 
         try {
             return $this->soapClient->$function( $soapParameters );
