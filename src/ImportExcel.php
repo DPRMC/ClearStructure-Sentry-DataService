@@ -140,6 +140,9 @@ abstract class ImportExcel {
 //        return static::$_instance;
     }
 
+
+
+
     /**
      * Sets the data into this object that you want imported into Sentry.
      * @param mixed $data
@@ -165,6 +168,20 @@ abstract class ImportExcel {
         endif;
 
         throw new \Exception( "You need to pass a path to an Excel file, or a multi-dimensional array containing the data to be inserted." );
+    }
+
+
+    /**
+     * The WSDL URL that WAS hosted on Sentry no longer appears to be there.
+     * So instead of refactoring the init method, I am just duct taping the problem with this method.
+     * Call this guy after init() and before run() to set the WSDL URL to something you host. I don't even think the page needs to return any text.
+     * @param string $wsdl
+     *
+     * @return $this
+     */
+    public function setWSDL(string $wsdl) {
+        $this->wsdl = $wsdl;
+        return $this;
     }
 
 
